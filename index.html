@@ -2,1559 +2,800 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>My Movies</title>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <style>
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-:root {
-    --bg: #08080c;
-    --surface: #111116;
-    --surface-2: #17171e;
-    --surface-3: #1d1d26;
-    --border: #272732;
-
-    --text: #f2f2f6;
-    --sub: #9999aa;
-    --muted: #5f5f70;
-
-    --accent: #7c5cfc;
-    --accent-hi: #a58cff;
-    --accent-dark: #241b4c;
-
-    --radius: 12px;
-}
-
-html {
-    background: var(--bg);
-}
-
-body {
-    background:
-        radial-gradient(
-            circle at 50% -20%,
-            rgba(124, 92, 252, 0.10),
-            transparent 40%
-        ),
-        var(--bg);
-
-    color: var(--text);
-    min-height: 100vh;
-
-    font-family: "Inter", system-ui, sans-serif;
-
-    overflow-x: hidden;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-
-    height: 68px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 18px;
-
-    padding: 0 24px;
-
-    background: rgba(8, 8, 12, 0.78);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-
-    font-size: 19px;
-    font-weight: 700;
-
-    letter-spacing: -0.4px;
-
-    white-space: nowrap;
-}
-
-.logo-icon {
-    width: 32px;
-    height: 32px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 9px;
-
-    background: linear-gradient(
-        135deg,
-        var(--accent),
-        #5b3ee5
-    );
-
-    box-shadow:
-        0 5px 20px rgba(124, 92, 252, 0.25);
-}
-
-.logo span {
-    color: var(--accent-hi);
-}
-
-.search-wrap {
-    position: relative;
-
-    flex: 1;
-
-    max-width: 520px;
-}
-
-#search {
-    width: 100%;
-
-    padding: 11px 14px 11px 42px;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: rgba(20,20,27,0.9);
-
-    color: var(--text);
-
-    font-size: 14px;
-    font-family: inherit;
-
-    outline: none;
-
-    transition:
-        border-color .2s,
-        box-shadow .2s,
-        background .2s;
-}
-
-#search:focus {
-    border-color: rgba(124,92,252,.7);
-
-    background: var(--surface-2);
-
-    box-shadow:
-        0 0 0 3px rgba(124,92,252,.10);
-}
-
-#search::placeholder {
-    color: var(--muted);
-}
-
-.search-icon {
-    position: absolute;
-
-    left: 14px;
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    color: var(--muted);
-
-    font-size: 15px;
-
-    pointer-events: none;
-}
-
-#movieCount {
-    color: var(--muted);
-
-    font-size: 13px;
-
-    white-space: nowrap;
-}
-
-/* =========================
-   MAIN
-========================= */
-
-main {
-    display: grid;
-
-    grid-template-columns: minmax(0, 1fr) 340px;
-
-    max-width: 1450px;
-
-    margin: auto;
-
-    gap: 22px;
-
-    padding: 24px;
-}
-
-.left {
-    min-width: 0;
-}
-
-.right {
-    position: sticky;
-
-    top: 92px;
-
-    height: calc(100vh - 116px);
-
-    min-height: 400px;
-
-    display: flex;
-
-    flex-direction: column;
-}
-
-/* =========================
-   PLAYER
-========================= */
-
-.player-wrap {
-    position: relative;
-
-    background: #000;
-
-    border-radius: 14px;
-
-    overflow: hidden;
-
-    border: 1px solid var(--border);
-
-    aspect-ratio: 16 / 9;
-
-    box-shadow:
-        0 20px 60px rgba(0,0,0,.35);
-
-    transition:
-        border-radius .3s,
-        box-shadow .3s;
-}
-
-.player-wrap:hover {
-    border-color: #30303b;
-}
-
-.placeholder {
-    position: absolute;
-
-    inset: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 14px;
-
-    color: var(--muted);
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(124,92,252,.08),
-            transparent 45%
-        ),
-        #08080c;
-}
-
-.placeholder-icon {
-    width: 72px;
-    height: 72px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 20px;
-
-    background: rgba(124,92,252,.08);
-
-    font-size: 34px;
-
-    box-shadow:
-        inset 0 0 0 1px rgba(124,92,252,.12);
-}
-
-.placeholder-text {
-    font-size: 14px;
-}
-
-/* iframe */
-
-#player-iframe {
-    width: 100%;
-    height: 100%;
-
-    border: 0;
-
-    display: none;
-
-    background: #000;
-}
-
-/* =========================
-   PLAYER ACTIONS
-========================= */
-
-.player-actions {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    margin-top: 10px;
-
-    gap: 10px;
-}
-
-.player-action-group {
-    display: flex;
-
-    gap: 7px;
-}
-
-.action-btn {
-    height: 36px;
-
-    padding: 0 12px;
-
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 7px;
-
-    border: 1px solid var(--border);
-
-    border-radius: 9px;
-
-    background: var(--surface);
-
-    color: var(--sub);
-
-    font-family: inherit;
-
-    font-size: 12px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        background .15s,
-        color .15s,
-        border-color .15s,
-        transform .15s;
-}
-
-.action-btn:hover {
-    background: var(--surface-3);
-
-    color: var(--text);
-
-    border-color: #393946;
-
-    transform: translateY(-1px);
-}
-
-.action-btn.primary {
-    background: var(--accent-dark);
-
-    border-color: rgba(124,92,252,.35);
-
-    color: var(--accent-hi);
-}
-
-.action-btn.primary:hover {
-    background: #2c215b;
-}
-
-/* =========================
-   NOW PLAYING
-========================= */
-
-.now-playing {
-    padding: 20px 2px 18px;
-}
-
-.now-label {
-    display: none;
-
-    margin-bottom: 5px;
-
-    color: var(--accent-hi);
-
-    font-size: 10px;
-    font-weight: 700;
-
-    letter-spacing: 1px;
-
-    text-transform: uppercase;
-}
-
-.now-title {
-    font-size: 21px;
-
-    font-weight: 600;
-
-    line-height: 1.35;
-
-    color: var(--text);
-
-    letter-spacing: -0.3px;
-}
-
-/* =========================
-   NOTICE
-========================= */
-
-.notice {
-    display: none;
-
-    margin-bottom: 14px;
-
-    padding: 11px 14px;
-
-    border-radius: 9px;
-
-    background: rgba(124,92,252,.07);
-
-    border: 1px solid rgba(124,92,252,.18);
-
-    color: var(--sub);
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-.notice strong {
-    color: var(--accent-hi);
-}
-
-/* =========================
-   LIST
-========================= */
-
-.list-header {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    padding: 0 4px 9px;
-
-    color: var(--muted);
-
-    font-size: 11px;
-    font-weight: 600;
-
-    text-transform: uppercase;
-
-    letter-spacing: .7px;
-}
-
-.list {
-    flex: 1;
-
-    min-height: 0;
-
-    overflow-y: auto;
-
-    background: rgba(17,17,22,.88);
-
-    border: 1px solid var(--border);
-
-    border-radius: 13px;
-
-    box-shadow:
-        0 12px 35px rgba(0,0,0,.18);
-}
-
-.list::-webkit-scrollbar {
-    width: 7px;
-}
-
-.list::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.list::-webkit-scrollbar-thumb {
-    background: #292934;
-
-    border-radius: 10px;
-}
-
-.list::-webkit-scrollbar-thumb:hover {
-    background: #3b3b49;
-}
-
-/* =========================
-   MOVIES
-========================= */
-
-.movie {
-    position: relative;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    padding: 12px 14px;
-
-    border-bottom: 1px solid rgba(255,255,255,.045);
-
-    cursor: pointer;
-
-    transition:
-        background .15s,
-        padding-left .15s;
-}
-
-.movie:last-child {
-    border-bottom: 0;
-}
-
-.movie:hover {
-    background: rgba(255,255,255,.035);
-}
-
-.movie.active {
-    background:
-        linear-gradient(
-            90deg,
-            rgba(124,92,252,.17),
-            rgba(124,92,252,.045)
-        );
-
-    padding-left: 17px;
-}
-
-.movie.active::before {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    top: 7px;
-    bottom: 7px;
-
-    width: 3px;
-
-    border-radius: 0 5px 5px 0;
-
-    background: var(--accent);
-}
-
-.num {
-    min-width: 24px;
-
-    color: var(--muted);
-
-    font-size: 11px;
-
-    text-align: right;
-
-    font-variant-numeric: tabular-nums;
-}
-
-.movie.active .num {
-    color: var(--accent-hi);
-}
-
-.name {
-    flex: 1;
-
-    color: var(--sub);
-
-    font-size: 13px;
-
-    line-height: 1.4;
-}
-
-.movie:hover .name,
-.movie.active .name {
-    color: var(--text);
-}
-
-.play-icon {
-    width: 25px;
-    height: 25px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 7px;
-
-    background: rgba(255,255,255,.04);
-
-    color: var(--muted);
-
-    font-size: 10px;
-
-    opacity: 0;
-
-    transform: translateX(4px);
-
-    transition:
-        opacity .15s,
-        transform .15s;
-}
-
-.movie:hover .play-icon,
-.movie.active .play-icon {
-    opacity: 1;
-
-    transform: translateX(0);
-}
-
-.movie.active .play-icon {
-    background: var(--accent);
-
-    color: white;
-}
-
-/* =========================
-   EMPTY
-========================= */
-
-.empty {
-    padding: 45px 20px;
-
-    text-align: center;
-
-    color: var(--muted);
-
-    font-size: 13px;
-}
-
-/* =========================
-   THEATER MODE
-========================= */
-
-body.theater main {
-    max-width: 1800px;
-
-    grid-template-columns: minmax(0, 1fr) 300px;
-}
-
-body.theater .player-wrap {
-    border-radius: 10px;
-}
-
-body.theater .right {
-    height: calc(100vh - 116px);
-}
-
-/* =========================
-   FULLSCREEN
-========================= */
-
-.player-wrap:fullscreen {
-    width: 100vw;
-    height: 100vh;
-
-    aspect-ratio: auto;
-
-    border: 0;
-
-    border-radius: 0;
-}
-
-.player-wrap:-webkit-full-screen {
-    width: 100vw;
-    height: 100vh;
-
-    aspect-ratio: auto;
-
-    border: 0;
-
-    border-radius: 0;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 900px) {
-
-    main {
-        grid-template-columns: 1fr;
-
-        padding: 16px;
-    }
-
-    .right {
-        position: static;
-
-        height: 420px;
-    }
-
-    .search-wrap {
-        max-width: none;
-    }
-}
-
-@media (max-width: 600px) {
-
-    header {
-        height: auto;
-
-        flex-wrap: wrap;
-
-        padding: 12px 14px;
-
-        gap: 10px;
-    }
-
-    .logo {
-        font-size: 17px;
-    }
-
-    .logo-icon {
-        width: 29px;
-        height: 29px;
-    }
-
-    .search-wrap {
-        order: 3;
-
-        flex-basis: 100%;
-    }
-
-    #movieCount {
-        display: none;
-    }
-
-    main {
-        padding: 10px 10px 30px;
-
-        gap: 16px;
-    }
-
-    .player-wrap {
-        border-radius: 10px;
-    }
-
-    .player-actions {
-        flex-wrap: wrap;
-    }
-
-    .action-btn {
-        height: 34px;
-
-        padding: 0 10px;
-    }
-
-    .now-title {
-        font-size: 18px;
-    }
-
-    .right {
-        height: 380px;
-    }
-}
-
-/* =========================
-   ANIMATIONS
-========================= */
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(4px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.movie {
-    animation: fadeIn .18s ease both;
-}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#08080c;--surface:#111116;--surface2:#17171e;--surface3:#1d1d26;--border:#272732;--text:#f2f2f6;--sub:#9999aa;--muted:#5f5f70;--accent:#7c5cfc;--accentHi:#a58cff;--accentDark:#241b4c}
+body{background:radial-gradient(circle at 50% -20%,rgba(124,92,252,.1),transparent 40%),var(--bg);color:var(--text);min-height:100vh;font-family:Inter,system-ui,sans-serif}
+header{position:sticky;top:0;z-index:50;height:68px;display:flex;align-items:center;gap:18px;padding:0 24px;background:rgba(8,8,12,.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:700;white-space:nowrap}.logoIcon{width:32px;height:32px;display:grid;place-items:center;border-radius:9px;background:linear-gradient(135deg,var(--accent),#5b3ee5);box-shadow:0 5px 20px rgba(124,92,252,.25)}
+.logo span{color:var(--accentHi)}
+.searchWrap{position:relative;flex:1;max-width:520px}.searchIcon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}#search{width:100%;padding:11px 14px 11px 40px;border:1px solid var(--border);border-radius:10px;background:rgba(20,20,27,.9);color:var(--text);outline:none;font:inherit;font-size:14px}#search:focus{border-color:rgba(124,92,252,.7);box-shadow:0 0 0 3px rgba(124,92,252,.1)}
+#count{font-size:12px;color:var(--muted);white-space:nowrap}
+main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:22px;max-width:1500px;margin:auto;padding:24px}
+.player{position:relative;background:#000;border:1px solid var(--border);border-radius:14px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.player iframe,.player video{width:100%;height:100%;border:0;display:none;background:#000}
+.placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);background:radial-gradient(circle at center,rgba(124,92,252,.08),transparent 45%),#08080c}.placeholderIcon{width:72px;height:72px;display:grid;place-items:center;border-radius:20px;background:rgba(124,92,252,.08);font-size:34px}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}.group{display:flex;gap:7px}.btn{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--sub);font:600 12px Inter;cursor:pointer}.btn:hover{background:var(--surface3);color:var(--text)}.btn.primary{background:var(--accentDark);border-color:rgba(124,92,252,.35);color:var(--accentHi)}
+.now{padding:20px 2px}.label{display:none;color:var(--accentHi);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}.title{font-size:21px;font-weight:600}
+.notice{display:none;margin-bottom:14px;padding:11px 14px;border-radius:9px;background:rgba(124,92,252,.07);border:1px solid rgba(124,92,252,.18);color:var(--sub);font-size:12px;line-height:1.5}.notice strong{color:var(--accentHi)}
+.side{position:sticky;top:92px;height:calc(100vh - 116px);min-height:400px;display:flex;flex-direction:column}
+.tabs{display:flex;gap:5px;margin-bottom:9px}.tab{flex:1;height:38px;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--sub);font:600 12px Inter;cursor:pointer}.tab.active{background:var(--accentDark);border-color:rgba(124,92,252,.35);color:var(--accentHi)}
+.listHeader{color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;padding:0 4px 9px}
+.list{flex:1;min-height:0;overflow-y:auto;background:rgba(17,17,22,.88);border:1px solid var(--border);border-radius:13px}.list::-webkit-scrollbar{width:7px}.list::-webkit-scrollbar-thumb{background:#292934;border-radius:10px}
+.item{position:relative;display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.045);cursor:pointer}.item:hover{background:rgba(255,255,255,.035)}.item.active{background:linear-gradient(90deg,rgba(124,92,252,.17),rgba(124,92,252,.045));padding-left:17px}.item.active:before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:0 5px 5px 0;background:var(--accent)}
+.num{min-width:25px;color:var(--muted);font-size:11px;text-align:right}.item.active .num{color:var(--accentHi)}.name{flex:1;color:var(--sub);font-size:13px;line-height:1.4}.item:hover .name,.item.active .name{color:var(--text)}.badge{font-size:9px;font-weight:700;text-transform:uppercase;color:var(--accentHi);background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.18);padding:4px 6px;border-radius:6px}
+.empty{padding:45px 20px;text-align:center;color:var(--muted);font-size:13px}
+.player:fullscreen{width:100vw;height:100vh;aspect-ratio:auto;border:0;border-radius:0}
+body.theater main{max-width:1800px;grid-template-columns:minmax(0,1fr) 300px}
+@media(max-width:900px){main{grid-template-columns:1fr;padding:16px}.side{position:static;height:420px}}
+@media(max-width:600px){header{height:auto;flex-wrap:wrap;padding:12px 14px;gap:10px}.searchWrap{order:3;flex-basis:100%}#count{display:none}main{padding:10px;gap:16px}.title{font-size:18px}}
 </style>
 </head>
-
 <body>
-
 <header>
-
-    <div class="logo">
-        <div class="logo-icon">🎬</div>
-        <div><span>My</span> Movies</div>
-    </div>
-
-    <div class="search-wrap">
-
-        <div class="search-icon">⌕</div>
-
-        <input
-            id="search"
-            type="text"
-            placeholder="Search movies..."
-            autocomplete="off"
-            spellcheck="false"
-        >
-
-    </div>
-
-    <div id="movieCount"></div>
-
+  <div class="logo"><div class="logoIcon">🎬</div><div><span>My</span> Movies</div></div>
+  <div class="searchWrap"><div class="searchIcon">⌕</div><input id="search" placeholder="Search movies and shows..." autocomplete="off" spellcheck="false"></div>
+  <div id="count"></div>
 </header>
 
-
 <main>
-
-    <div class="left">
-
-        <!-- PLAYER -->
-
-        <div class="player-wrap" id="playerWrap">
-
-            <div class="placeholder" id="placeholder">
-
-                <div class="placeholder-icon">
-                    🎬
-                </div>
-
-                <div class="placeholder-text">
-                    Select a movie to start watching
-                </div>
-
-            </div>
-
-            <iframe
-                id="player-iframe"
-                allowfullscreen
-                allow="autoplay; encrypted-media"
-            ></iframe>
-
-        </div>
-
-
-        <!-- PLAYER BUTTONS -->
-
-        <div class="player-actions">
-
-            <div class="player-action-group">
-
-                <button
-                    class="action-btn primary"
-                    id="fullscreenBtn"
-                    type="button"
-                >
-                    ⛶ Fullscreen
-                </button>
-
-                <button
-                    class="action-btn"
-                    id="theaterBtn"
-                    type="button"
-                >
-                    ▣ Theater
-                </button>
-
-            </div>
-
-            <div class="player-action-group">
-
-                <button
-                    class="action-btn"
-                    id="nextBtn"
-                    type="button"
-                >
-                    Next →
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <!-- NOTICE -->
-
-        <div class="notice" id="notice">
-
-            <strong>Heads up:</strong>
-            Google may ask you to sign in or show a
-            "can't play" message for some files.
-            Make sure each file in Drive is set to
-            <strong>Anyone with the link → Viewer</strong>.
-
-        </div>
-
-
-        <!-- NOW PLAYING -->
-
-        <div class="now-playing">
-
-            <div
-                class="now-label"
-                id="nowLabel"
-            >
-                Now playing
-            </div>
-
-            <div
-                class="now-title"
-                id="currentTitle"
-            >
-                Select a movie to start watching
-            </div>
-
-        </div>
-
+  <section>
+    <div class="player" id="player">
+      <div class="placeholder" id="placeholder">
+        <div class="placeholderIcon">🎬</div>
+        <div>Select a movie or show to start watching</div>
+      </div>
+      <iframe id="iframe" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+      <video id="video" controls playsinline></video>
     </div>
 
-
-    <!-- MOVIE LIST -->
-
-    <div class="right">
-
-        <div
-            class="list-header"
-            id="listHeader"
-        >
-            <span>All movies</span>
-        </div>
-
-        <div
-            class="list"
-            id="movieList"
-        ></div>
-
+    <div class="actions">
+      <div class="group">
+        <button class="btn primary" id="fullscreen">⛶ Fullscreen</button>
+        <button class="btn" id="theater">▣ Theater</button>
+      </div>
+      <div class="group">
+        <button class="btn" id="next">Next →</button>
+        <button class="btn" id="openSource">↗ Open source</button>
+      </div>
     </div>
 
+    <div class="notice" id="notice">
+      <strong>Tip:</strong> Google Drive files need to be shared as <strong>Anyone with the link → Viewer</strong>.
+      Some third-party pages do not allow iframe embedding; use <strong>Open source</strong> for those.
+    </div>
+
+    <div class="now">
+      <div class="label" id="label">Now playing</div>
+      <div class="title" id="title">Select a movie or show to start watching</div>
+    </div>
+  </section>
+
+  <aside class="side">
+    <div class="tabs">
+      <button class="tab active" data-type="movie">Movies</button>
+      <button class="tab" data-type="show">Shows</button>
+    </div>
+    <div class="listHeader" id="listHeader">All movies</div>
+    <div class="list" id="list"></div>
+  </aside>
 </main>
 
-
 <script>
-
-/* ============================================================
-   MOVIES
-============================================================ */
-
 const movies = [
-
-    {
-        title: "Santa Buddies",
-        url: "https://drive.google.com/file/d/1XF-bj2OAmSe0MqdlwNWontlMDuFWDDmL/view?usp=sharing"
-    },
-
-    {
-        title: "Anaconda",
-        url: "https://drive.google.com/file/d/1e6WxaBMG5Uz-7oR-RNqq3OqDiYhlGr-s/view?usp=sharing"
-    },
-
-    {
-        title: "Adams Family (1991)",
-        url: "https://drive.google.com/file/d/19ZYLs_076nTJtl7bEUtkwpfbwwj-GevJ/view?usp=sharing"
-    },
-
-    {
-        title: "Avengers",
-        url: "https://drive.google.com/file/d/1VazQykKMstXeaPRWUTwxUeWomjJUpRkE/view?usp=sharing"
-    },
-
-    {
-        title: "Avengers Age Of Ultron",
-        url: "https://drive.google.com/file/d/1RX9OwNju-DhN5pwDyDhgM_lL399xZCap/view?usp=sharing"
-    },
-
-    {
-        title: "Avengers Infinity War",
-        url: "https://drive.google.com/file/d/1oKDbw6zCdSRKRbABn6nKf_4LGsA3ftwL/view?usp=sharing"
-    },
-
-    {
-        title: "Avengers End Game",
-        url: "https://drive.google.com/file/d/1ehi9tidOYHb1RMldxtBw6-L3UhyEKVm9/view?usp=drivesdk"
-    },
-
-    {
-        title: "Anastasia",
-        url: "https://drive.google.com/file/d/1Vej6JoLL11vsSsVoUEOCGAoucInV3fhg/view?usp=sharing"
-    },
-
-    {
-        title: "Alvin and the Chipmunks",
-        url: "https://drive.google.com/file/d/1uCRRJZj1GAaweX996uHbF2zxPoessmGW/view?usp=sharing"
-    },
-
-    {
-        title: "AATC Squeakwal",
-        url: "https://drive.google.com/file/d/1em55qHTtdrWD4Dox9CXs9r1042TLu_cu/view?usp=sharing"
-    },
-
-    {
-        title: "AATC Chipwrecked",
-        url: "https://drive.google.com/file/d/1LTKy48IbusfXsl5nSNDTd0M3A8B3aPke/view?usp=sharing"
-    },
-
-    {
-        title: "Ace Ventura: Pet Detective",
-        url: "https://drive.google.com/file/d/1hFcuvFNBe3iQVhP0RKKPOZzPYU9-eFwD/view?usp=drive_link"
-    },
-
-    {
-        title: "Ant Man and the Wasp Quantomania",
-        url: "https://drive.google.com/file/d/1AW3Zm8256tzZ-37lmgYmIGse4knu8IdA/view"
-    },
-
-    {
-        title: "Annie (1999)",
-        url: "https://drive.google.com/file/d/15j2lph1iEm-3mWnKcjaVUxkodInyFLsL/view?usp=sharing"
-    },
-
-    {
-        title: "Annie (2014)",
-        url: "https://drive.google.com/file/d/1GYQqHUdyWMNQJKj4Sa8SGW0ZRX32D5og/view?usp=sharing"
-    },
-
-    {
-        title: "American Psycho",
-        url: "https://drive.google.com/file/d/16e4ru2rSr_UQNsq_DnF9mmMG6UURYO0o/view?usp=sharing"
-    },
-
-    {
-        title: "Avatar 1",
-        url: "https://drive.google.com/file/d/16tKuEYtxi7EeKtX3yZZR-nXgZ_oGTxXS/view?usp=sharing"
-    },
-
-    {
-        title: "Avatar 2 - Way of Water",
-        url: "https://drive.google.com/file/d/1a6y7NvveaJanEBTMvEeS2Ro3v2vII9Gt/view?usp=drive_link"
-    },
-
-    {
-        title: "Avatar 3 - Fire and Ash",
-        url: "https://drive.google.com/file/d/1fHMpBNotGTHeX3eiCeYRdTCbMrbjM0aj/view?usp=sharing"
-    },
-
-    {
-        title: "Avatar the Last Airbender: AANG (2026)",
-        url: "https://drive.google.com/file/d/18F5NmcXagAOc80je8-89w3uZ9Ru7tMnR/view?usp=sharing"
-    },
-
-    {
-        title: "Aladdin 1",
-        url: "https://drive.google.com/file/d/1Haueh9PnM4UeUPwgMlRdYHiLbBJSVe8c/view?usp=drive_link"
-    },
-
-    {
-        title: "Aladdin 2",
-        url: "https://drive.google.com/file/d/1-bPH20w81ek2SVsn1tDo06KOB2Ybzexp/view?usp=drivesdk"
-    },
-
-    {
-        title: "Aladdin 3",
-        url: "https://drive.google.com/file/d/1-aGV6bUS3BCxJ0-aXRt7qjvw4FupWZul/view?usp=sharing"
-    },
-
-    {
-        title: "Aladdin Live Action",
-        url: "https://drive.google.com/file/d/1-ojY6UY42G8krF1ahreGwgmokX3FGwD/view?usp=sharing"
-    },
-
-    {
-        title: "Amistad",
-        url: "https://drive.google.com/file/d/1yLnn08WMfw_Gans9jmOGoDVHwOkf-LFD/view?usp=sharing"
-    },
-
-    {
-        title: "Aquaman 1",
-        url: "https://drive.google.com/file/d/1pXTuacvpgfr2o2Nx8EjuO9rXbFWYpHs5/view?usp=drive_link"
-    },
-
-    {
-        title: "Aquaman 2",
-        url: "https://drive.google.com/file/d/1ckNGSVAYQ46FiawJqLyIfcVUpcSQnUOC/view?usp=drive_link"
-    },
-
-    {
-        title: "About a Boy",
-        url: "https://drive.google.com/file/d/1nkti_wfUlge77R89O2raNMqTG0T26Imx/view?usp=drive_link"
-    },
-
-    {
-        title: "All of Us Strangers",
-        url: "https://drive.google.com/file/d/1RibCsz1oUZp2i2Sb-zqsSwc2Y3-fBFla/view?usp=drive_link"
-    },
-
-    {
-        title: "Armageddon",
-        url: "https://drive.google.com/file/d/13YpBPHID2kOYN_Qe6luBCSb6R8810PWc/view?usp=sharing"
-    },
-
-    {
-        title: "Alice In Wonderland",
-        url: "https://drive.google.com/file/d/1mgeLaeUbClGhPArUBkquX0y2DyGzQrt2/view?usp=sharing"
-    },
-
-    {
-        title: "Alice In Wonderland Live Action",
-        url: "https://drive.google.com/file/d/1-UTHRAC6yodnOZ3Ss_EZ7M7rdnKxlzZ9/view?usp=sharing"
-    },
-
-    {
-        title: "An American Girl: Grace Stirs Up Success",
-        url: "https://drive.google.com/file/d/1-dVkqF-JaW3-cSzqBgtayOpHVUvKFhOv/view?usp=sharing"
-    }
-
+    { title: "Santa Buddies", url: "https://drive.google.com/file/d/1XF-bj2OAmSe0MqdlwNWontlMDuFWDDmL/view?usp=sharing", type: "movie" },
+    { title: "Anaconda", url: "https://drive.google.com/file/d/1e6WxaBMG5Uz-7oR-RNqq3OqDiYhlGr-s/view?usp=sharing", type: "movie" },
+    { title: "Adams Family (1991)", url: "https://drive.google.com/file/d/19ZYLs_076nTJtl7bEUtkwpfbwwj-GevJ/view?usp=sharing", type: "movie" },
+    { title: "Avengers", url: "https://drive.google.com/file/d/1VazQykKMstXeaPRWUTwxUeWomjJUpRkE/view?usp=sharing", type: "movie" },
+    { title: "Avengers Age Of Ultron", url: "https://drive.google.com/file/d/1RX9OwNju-DhN5pwDyDhgM_lL399xZCap/view?usp=sharing", type: "movie" },
+    { title: "Avengers Infinity War", url: "https://drive.google.com/file/d/1oKDbw6zCdSRKRbABn6nKf_4LGsA3ftwL/view?usp=sharing", type: "movie" },
+    { title: "Avengers End Game", url: "https://drive.google.com/file/d/1ehi9tidOYHb1RMldxtBw6-L3UhyEKVm9/view?usp=drivesdk", type: "movie" },
+    { title: "Anastasia", url: "https://drive.google.com/file/d/1Vej6JoLL11vsSsVoUEOCGAoucInV3fhg/view?usp=sharing", type: "movie" },
+    { title: "Alvin and the Chipmunks", url: "https://drive.google.com/file/d/1uCRRJZj1GAaweX996uHbF2zxPoessmGW/view?usp=sharing", type: "movie" },
+    { title: "AATC Squeakwal", url: "https://drive.google.com/file/d/1em55qHTtdrWD4Dox9CXs9r1042TLu_cu/view?usp=sharing", type: "movie" },
+    { title: "AATC Chipwrecked", url: "https://drive.google.com/file/d/1LTKy48IbusfXsl5nSNDTd0M3A8B3aPke/view?usp=sharing", type: "movie" },
+    { title: "Ace Ventura: Pet Detective", url: "https://drive.google.com/file/d/1hFcuvFNBe3iQVhP0RKKPOZzPYU9-eFwD/view?usp=drive_link", type: "movie" },
+    { title: "Ant Man and the Wasp Quantomania", url: "https://drive.google.com/file/d/1AW3Zm8256tzZ-37lmgYmIGse4knu8IdA/view", type: "movie" },
+    { title: "Annie (1999)", url: "https://drive.google.com/file/d/15j2lph1iEm-3mWnKcjaVUxkodInyFLsL/view?usp=sharing", type: "movie" },
+    { title: "Annie (2014)", url: "https://drive.google.com/file/d/1GYQqHUdyWMNQJKj4Sa8SGW0ZRX32D5og/view?usp=sharing", type: "movie" },
+    { title: "American Psycho", url: "https://drive.google.com/file/d/16e4ru2rSr_UQNsq_DnF9mmMG6UURYO0o/view?usp=sharing", type: "movie" },
+    { title: "Avatar 1", url: "https://drive.google.com/file/d/16tKuEYtxi7EeKtX3yZZR-nXgZ_oGTxXS/view?usp=sharing", type: "movie" },
+    { title: "Avatar 2 - Way of Water", url: "https://drive.google.com/file/d/1a6y7NvveaJanEBTMvEeS2Ro3v2vII9Gt/view?usp=drive_link", type: "movie" },
+    { title: "Avatar 3 - Fire and Ash", url: "https://drive.google.com/file/d/1fHMpBNotGTHeX3eiCeYRdTCbMrbjM0aj/view?usp=sharing", type: "movie" },
+    { title: "Avatar the Last Airbender: AANG (2026)", url: "https://drive.google.com/file/d/18F5NmcXagAOc80je8-89w3uZ9Ru7tMnR/view?usp=sharing", type: "movie" },
+    { title: "Aladdin 1", url: "https://drive.google.com/file/d/1Haueh9PnM4UeUPwgMlRdYHiLbBJSVe8c/view?usp=drive_link", type: "movie" },
+    { title: "Aladdin 2", url: "https://drive.google.com/file/d/1-bPH20w81ek2SVsn1tDo06KOB2Ybzexp/view?usp=drivesdk", type: "movie" },
+    { title: "Aladdin 3", url: "https://drive.google.com/file/d/1-aGV6bUS3BCxJ0-aXRt7qjvw4FupWZul/view?usp=sharing", type: "movie" },
+    { title: "Aladdin Live Action", url: "https://drive.google.com/file/d/1-ojY6UY42G8krF1ahreGwgmokX3FGwD/view?usp=sharing", type: "movie" },
+    { title: "Amistad", url: "https://drive.google.com/file/d/1yLnn08WMfw_Gans9jmOGoDVHwOkf-LFD/view?usp=sharing", type: "movie" },
+    { title: "Aquaman 1", url: "https://drive.google.com/file/d/1pXTuacvpgfr2o2Nx8EjuO9rXbFWYpHs5/view?usp=drive_link", type: "movie" },
+    { title: "Aquaman 2", url: "https://drive.google.com/file/d/1ckNGSVAYQ46FiawJqLyIfcVUpcSQnUOC/view?usp=drive_link", type: "movie" },
+    { title: "About a Boy", url: "https://drive.google.com/file/d/1nkti_wfUlge77R89O2raNMqTG0T26Imx/view?usp=drive_link", type: "movie" },
+    { title: "All of Us Strangers", url: "https://drive.google.com/file/d/1RibCsz1oUZp2i2Sb-zqsSwc2Y3-fBFla/view?usp=drive_link", type: "movie" },
+    { title: "Armageddon", url: "https://drive.google.com/file/d/13YpBPHID2kOYN_Qe6luBCSb6R8810PWc/view?usp=sharing", type: "movie" },
+    { title: "Alice In Wonderland", url: "https://drive.google.com/file/d/1mgeLaeUbClGhPArUBkquX0y2DyGzQrt2/view?usp=sharing", type: "movie" },
+    { title: "Alice In Wonderland Live Action", url: "https://drive.google.com/file/d/1-UTHRAC6yodnOZ3Ss_EZ7M7rdnKxlzZ9/view?usp=sharing", type: "movie" },
+    { title: "An American Girl: Grace Stirs Up Success", url: "https://drive.google.com/file/d/1-dVkqF-JaW3-cSzqBgtayOpHVUvKFhOv/view?usp=sharing", type: "movie" },
+    { title: "A Charlie Brown Christmas (1965)", url: "https://drive.google.com/file/d/1e2UIrJdsz_0k5tp2v0EnPZiPv2ZQSTzg/view?usp=drivesdk", type: "movie" },
+    { title: "A Goofy Movie (1995)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1995%20-%20A%20Goofy%20Movie.mp4", type: "movie" },
+    { title: "A Hard Days Night (1964)", url: "https://archive.org/details/aharddaysnightmovie", type: "movie" },
+    { title: "Aladin and the King of Thieves (1996)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1996%20-%20Aladdin%20and%20the%20King%20of%20Thieves.mp4", type: "movie" },
+    { title: "Alice in Wonderland (1951)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1951%20-%20Alice%20in%20Wonderland.mp4", type: "movie" },
+    { title: "Alita Battle Angel (2019)", url: "https://drive.google.com/file/d/1CPg2NtDyfEcxoJI2VL6qOzxNQqhdlTaV/view?usp=drivesdk", type: "movie" },
+    { title: "A Minecraft Movie (2025)", url: "https://ia801303.us.archive.org/3/items/a-minecraft-movie_202510/A%20Minecraft%20Movie.mp4", type: "movie" },
+    { title: "A Nightmare On Elm Street (1984)", url: "https://drive.google.com/file/d/11MmlhFiOykC9HsI1vN2NbVC4NA2YDV8E/view?usp=drivesdk", type: "movie" },
+    { title: "A Silent Voice (2016)", url: "https://moviebox.ph/detail/a-silent-voice-koJktRjWhm2", type: "movie" },
+    { title: "Asteroid City (2023)", url: "https://drive.google.com/file/d/1kmeG7E-WlAXniNYkoqSS-A7uvT2PFhV9/view?usp=drivesdk", type: "movie" },
+    { title: "Atlantis", url: "https://archive.org/details/atlantis.-the.-lost.-empire.-2001-1080p", type: "movie" },
+    { title: "Backrooms (2026)", url: "https://cinejoy.to/movie/1083381-backrooms-2026", type: "movie" },
+    { title: "Batman Assault On Arkham (2014)", url: "https://drive.google.com/file/d/1ebWrMVk1nKPTbacUq8i_FPChdm3pLAr7/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie (2023)", url: "https://drive.google.com/file/d/1K88LvZ6q9KRwsdiVQ72Wrh5DQqWVLkd3/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie and the Magic of Pegasus", url: "https://youtu.be/jfLmLEfiHYw?is=6NxtAzYEFiIzm7pt", type: "movie" },
+    { title: "Barbie and Her Sisters in A Pony Tale (2013)", url: "https://youtu.be/KEZGMCCobyI?feature=shared", type: "movie" },
+    { title: "Barbie and The Three Musketeers (2009)", url: "https://drive.google.com/file/d/1Q5Thme6OtnXtWYvtZqNM74GO7NySckUv/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie as Rapunzel (2002)", url: "https://drive.google.com/file/d/1yD1Bn7Tr4eXwzWk0iXsT2987OeWDoWzl/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie in the Nutcracker (2001)", url: "https://drive.google.com/file/d/1SvdXu0BGA7H8BvtXjtXwpNw975CBftTG/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie: The Pearl Princess (2014)", url: "https://drive.google.com/file/d/1-R5pEQGD012VNVEAMK7Yjzhl7vJdKA1C/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie in Video Game Hero (2017)", url: "https://drive.google.com/file/d/1d9Tlnn-oXBLIDtiaT_L40bA0rZMqo6nj/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie Princess Adventure (2020)", url: "https://drive.google.com/file/d/1lZFMtlz8La01Tfe1nBfcTRz9gjG0mIul/view?usp=drivesdk", type: "movie" },
+    { title: "Barbie: Spy Squad (2016)", url: "https://drive.google.com/file/d/1fkuJwvIV6Yt2NTwcD7M2-ofn9dIIz03O/view?usp=drivesdk", type: "movie" },
+    { title: "BASEketball (1998)", url: "https://drive.google.com/file/d/1byKNX3LjiqCXgFvOG7YN-_zzEayNL7zu/view?usp=drivesdk", type: "movie" },
+    { title: "Beauty and the Beast (1991)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1991%20-%20Beauty%20and%20the%20Beast.mp4", type: "movie" },
+    { title: "Black Sunday (1960)", url: "https://youtu.be/d7it3DicEI0?is=cAB5_aUUXCwjdDMt", type: "movie" },
+    { title: "Black Swan (2010)", url: "https://drive.google.com/file/d/1vqkoe0tYD3f_L-wfFGbrlkW9arm6v6bw/view?usp=drivesdk", type: "movie" },
+    { title: "Bones and All (2022)", url: "https://drive.google.com/file/d/112SlPPTnFEKFLvWrj8iahxopkpX8lIcx/view?usp=drivesdk", type: "movie" },
+    { title: "Boy Kills World (2024", url: "https://drive.google.com/file/d/1_O6xuKsyQF0pr-baV6lPDFTS24gSMGgk/view?usp=drivesdk", type: "movie" },
+    { title: "Bride Wars (2009)", url: "https://archive.org/details/the-thing_202010", type: "movie" },
+    { title: "Buffy the Vampire Slayer (1992)", url: "https://rrr.data30vault.site/pj67/c5/h6a90f70b8d237f94866b6cfc2c7c06afdb8423c6639e9e32bb746e752df368eae35b899eb0ee7bdfc502a43593dab3433f4333152a980ee20684d39409fc5cfe4c1a/1/aGxzLzM2MC8zNjA,Ktm0Vt9-cJyXbGG_O3gV_5rBOZBLhZ0.m3u8", type: "movie" },
+    { title: "Bullet Train (2022)", url: "https://drive.google.com/file/d/1Ro-HY0aZSzXkisjhgQl_slyV6jTMyPIR/view", type: "movie" },
+    { title: "But I’m a Cheerleader", url: "https://youtu.be/IuSwvdIsM_E?is=MaOOSG6YXgf5JHo_", type: "movie" },
+    { title: "Call Me by Your Name (2017)", url: "https://cinejoy.to/movie/398818-call-me-by-your-name-2017", type: "movie" },
+    { title: "Casper (1995)", url: "https://cinejoy.to/movie/8839-casper-1995", type: "movie" },
+    { title: "Casper: A Spirited Beginning (1997)", url: "https://cinejoy.to/movie/39346-casper-a-spirited-beginning-1997", type: "movie" },
+    { title: "Casper Meets Wendy (1998)", url: "https://cinejoy.to/movie/39345-casper-meets-wendy-1998", type: "movie" },
+    { title: "Challengers (2024)", url: "https://drive.google.com/file/d/1lR2-hKjOYTupCH-Kyi6JKnSIrh2XYNWZ/view?usp=drivesdk", type: "movie" },
+    { title: "Chainsaw Man - The Movie: Reze Arc (2025)", url: "https://drive.google.com/file/d/1Ejba9ZjDSdEsH0PtUJvsVC9qRQE0WgvW/view", type: "movie" },
+    { title: "Carrie (1976)", url: "https://drive.google.com/file/d/13GS-h13Yuy9uNg79tULnZIIX_dPCv_YQ/view?usp=drivesdk", type: "movie" },
+    { title: "Cars (2006)", url: "https://cinejoy.to/movie/920-cars-2006", type: "movie" },
+    { title: "Cars 2 (2011)", url: "https://cinejoy.to/movie/49013-cars-2-2011", type: "movie" },
+    { title: "Cars 3 (2017)", url: "https://cinejoy.to/movie/260514-cars-3-2017", type: "movie" },
+    { title: "Charlie and the Chocolate Factory (2005)", url: "https://dn720300.ca.archive.org/0/items/duets-2000/Charlie%20and%20The%20Chocolate%20Factory%20\\(2005\\", type: "movie" },
+    { title: "Charlottes Web (2006)", url: "https://dn720300.ca.archive.org/0/items/duets-2000/Charlotte's%20Web%20\\(2006\\", type: "movie" },
+    { title: "Chronicle (2012)", url: "https://drive.google.com/file/d/1NnwK89bTqoMJUq7yN2qvgEKQZx96ecbj/view?usp=drivesdk", type: "movie" },
+    { title: "Clueless (1995)", url: "https://cinejoy.to/movie/9603-clueless-1995", type: "movie" },
+    { title: "Coco (2017)", url: "https://drive.google.com/file/d/194M4dGCwh1hTxVM1-_axnLSdt4trnbK2/view", type: "movie" },
+    { title: "Cruella (2021)", url: "https://drive.google.com/file/d/145c2T7cgpPrnQ10rOvV9PeXAjAVMcUEu/view?usp=drivesdk", type: "movie" },
+    { title: "Dead Poet Society", url: "https://archive.org/details/dead-poets-society-1989-1080p-blu-ray-x-264-aac-ozlem_202402", type: "movie" },
+    { title: "Deadpool (2016)", url: "https://drive.google.com/file/d/1OWTLMQNtkpvzwKBmo3seq6SZQYU2HuBz/view?usp=drivesdk", type: "movie" },
+    { title: "Death Proof (2007)", url: "https://drive.google.com/file/d/1uCIEm4CUTGQlwfViaUS1gsny8T6A5eBV/view?usp=drivesdk", type: "movie" },
+    { title: "Despicable Me (2010)", url: "https://cinejoy.to/movie/20352-despicable-me-2010", type: "movie" },
+    { title: "Despicable Me 2 (2013)", url: "https://cinejoy.to/movie/93456-despicable-me-2-2013", type: "movie" },
+    { title: "Despicable Me 3 (2017)", url: "https://cinejoy.to/movie/324852-despicable-me-3-2017", type: "movie" },
+    { title: "Despicable Me 4 (2024)", url: "https://cinejoy.to/movie/519182-despicable-me-4-2024", type: "movie" },
+    { title: "Desperado (1995)", url: "https://drive.google.com/file/d/1Lx9eXSP1p5DcxB841A0UTSp27gsVcgBh/view?usp=drivesdk", type: "movie" },
+    { title: "Diary of a Wimpy Kid: Rodrick Rules (2011)", url: "https://drive.google.com/file/d/1vaYmB8q7jKaeXTc9knTSLgtpJrneVvhV/view?usp=drivesdk", type: "movie" },
+    { title: "Disclosure Day (2026)", url: "https://cinejoy.to/movie/1275779-disclosure-day-2026", type: "movie" },
+    { title: "Django Unchained (2012)", url: "https://drive.google.com/file/d/1-hvST7cGnr72trLhmy_FZDOg29dzIkyG/view?usp=drivesdk", type: "movie" },
+    { title: "Donnie Darko (2001)", url: "https://drive.google.com/file/d/1l_HT6NGSgeJ0MNQV6Ecyzhjxffiq64dB/view?usp=drivesdk", type: "movie" },
+    { title: "Dou kyu sei - Classmates", url: "https://www.bilibili.tv/en/video/2046388368", type: "movie" },
+    { title: "Dracula (1931)", url: "https://archive.org/details/Dracula1931", type: "movie" },
+    { title: "DuckTales: The Movie - Treasure of the Lost Lamp (1990)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1990%20-%20Ducktales%20The%20Movie%20-%20Treasure%20of%20the%20Lost%20Lamp.mp4", type: "movie" },
+    { title: "Dune (2021)", url: "https://cinejoy.to/movie/438631-dune-2021", type: "movie" },
+    { title: "Dune: Part Two (2024)", url: "https://cinejoy.to/movie/693134-dune-part-two-2024", type: "movie" },
+    { title: "Ever After High - Spring Unsprung", url: "https://archive.org/details/ever-after-high-thronecoming_spring-unsprung", type: "movie" },
+    { title: "Ever After High - Thronecoming", url: "https://archive.org/details/ever-after-high-thronecoming_spring-unsprung", type: "movie" },
+    { title: "Eyes Wide Shut (1999)", url: "https://drive.google.com/file/d/1Flk0xSPm8X_LockxSkZ0q7DfcC-1BqdG/view?usp=drivesdk", type: "movie" },
+    { title: "Eyes Without a Face (1960)", url: "https://youtu.be/K_xgLU6jft0?is=oAErGU6TeucDFCk9", type: "movie" },
+    { title: "Fall (2022)", url: "https://drive.google.com/file/d/1FZ3UlDvHVMTpsaZ7s08ScOIOeLCnEj7h/view", type: "movie" },
+    { title: "Fantastic Mr. Fox", url: "https://archive.org/details/fantastic.-mr.-fox.-2009.720p.-br-rip.x-264.-yify", type: "movie" },
+    { title: "Fantastic Planet", url: "https://archive.org/details/fantastic-planet__1973", type: "movie" },
+    { title: "Fear Street Part One: 1994 (2021)", url: "https://drive.google.com/file/d/1rJ_ZZ6422OClWE4biCJax6K9XevMuzED/view?usp=drivesdk", type: "movie" },
+    { title: "Fear Street Part Two: 1978 (2021)", url: "https://drive.google.com/file/d/13lauV9_kst1eXVZPWzH5ygzfYw_GRtu3/view?usp=drivesdk", type: "movie" },
+    { title: "Fear Street Part Three: 1666 (2021)", url: "https://drive.google.com/file/d/1W2dJ0qK5x88HHH-EBAKKLE0GNZP7U4__/view?usp=drivesdk", type: "movie" },
+    { title: "Fear Street: Prom Queen (2025)", url: "https://drive.google.com/file/d/1zdA4oXxiVCtEOiQJbwj-MGWPybHWbxnG/view?usp=drivesdk", type: "movie" },
+    { title: "Fight Club", url: "https://archive.org/details/fight-club_202006", type: "movie" },
+    { title: "Five Nights At Freddys", url: "https://cinema.bz/watch?id=507089\\&type=movie\\&title=Five+Nights+at+Freddy%27s", type: "movie" },
+    { title: "Five Nights At Freddys 2", url: "https://cinema.bz/watch?id=1228246\\&type=movie\\&title=Five+Nights+at+Freddy%27s+2", type: "movie" },
+    { title: "Flipped (2010)", url: "https://drive.google.com/file/d/1TIrMWLHX4OumJVAFdWsUqaU9iW95Oegn/view?usp=drivesdk", type: "movie" },
+    { title: "Frankenweenie (2012)", url: "https://cinejoy.to/movie/62214-frankenweenie-2012", type: "movie" },
+    { title: "Friday the 13th (1980)", url: "https://cinejoy.to/movie/4488-friday-the-13th-1980", type: "movie" },
+    { title: "Friday the 13th Part II (1981)", url: "https://cinejoy.to/movie/9725-friday-the-13th-part-2-1981", type: "movie" },
+    { title: "Friday the 13th Part III (1982)", url: "https://cinejoy.to/movie/9728-friday-the-13th-part-iii-1982", type: "movie" },
+    { title: "Friday the 13th: The Final Chapter (1984)", url: "https://cinejoy.to/movie/9730-friday-the-13th-the-final-chapter-1984", type: "movie" },
+    { title: "Friday the 13th: A New Beginning (1985)", url: "https://cinejoy.to/movie/9731-friday-the-13th-a-new-beginning-1985", type: "movie" },
+    { title: "Friday the 13th: Jason Lives (1986)", url: "https://cinejoy.to/movie/10225-jason-lives-friday-the-13th-part-vi-1986", type: "movie" },
+    { title: "Friday the 13th: The New Blood (1988)", url: "https://cinejoy.to/movie/10225-jason-lives-friday-the-13th-part-vi-1986", type: "movie" },
+    { title: "Friday the 13th: Jason Takes Manhattan (1989)", url: "https://cinejoy.to/movie/10283-friday-the-13th-part-viii-jason-takes-manhattan-1989", type: "movie" },
+    { title: "Friday the 13th: Jason X (2001)", url: "https://cinejoy.to/movie/11470-jason-x-2001", type: "movie" },
+    { title: "Friday the 13th: Freddy vs. Jason (2003)", url: "https://cinejoy.to/movie/6466-freddy-vs-jason-2003", type: "movie" },
+    { title: "From Dusk till Dawn (1996)", url: "https://drive.google.com/file/d/1l0VkCuUOyC0v6SsCkdB8Qx3jnO8aZQhD/view?usp=drivesdk", type: "movie" },
+    { title: "Frozen (2013)", url: "https://drive.google.com/file/d/1XIuN4Zp35mW0iN4p0ME5APxH18-6Zqft/view", type: "movie" },
+    { title: "Frozen II (2019)", url: "https://drive.google.com/file/d/1hpUpKEdeT9ta-8FjSpMUAXw17E-8uwIY/view?usp=drivesdk", type: "movie" },
+    { title: "Full Metal Jacket (1987)", url: "https://drive.google.com/file/d/1CWM7JXM7n_RzQP1Yff6VYHg4aUBZ94pU/view?usp=drivesdk", type: "movie" },
+    { title: "Funny Games (2007)", url: "https://drive.google.com/file/d/1x8JdpfrH_FA53yXm5hMQzaXt7pqGZusG/view?usp=drivesdk", type: "movie" },
+    { title: "Get Out (2017)", url: "https://drive.google.com/file/d/1XsCH7ONUGuieiVHsixjtiZm23W6K8d2b/view?usp=drivesdk", type: "movie" },
+    { title: "Girl Interrupted (1999)", url: "https://archive.org/details/girl-interrupted-1999", type: "movie" },
+    { title: "Godzilla Vs. Kong (2021)", url: "https://ia802304.us.archive.org/14/items/hexziasmovies/Godzilla%20Vs%20Kong.mp4", type: "movie" },
+    { title: "Godzilla: King of the Monsters (2019)", url: "https://dn720001.ca.archive.org/0/items/hexziasmovies/Godzilla%20King%20Of%20The%20Monsters.mp4", type: "movie" },
+    { title: "Good Burger 2 (2023)", url: "https://drive.google.com/file/d/1TOjPbqSF5UqnPrn1zFqEWvkUeBNiyMax/view", type: "movie" },
+    { title: "Good Will Hunting", url: "https://archive.org/details/Good_Will_Hunting_ABC_WOC_2001-02-19", type: "movie" },
+    { title: "Halloween (1978)", url: "https://drive.google.com/file/d/1b1PfTP1R9DWBXDX4uTqHre-3_4V5U8aI/view?usp=drivesdk", type: "movie" },
+    { title: "Halloween 2 (1981)", url: "https://cinejoy.to/movie/11281-halloween-ii-1981", type: "movie" },
+    { title: "Halloween 3: Season of The Witch (1982)", url: "https://cinejoy.to/movie/10676-halloween-iii-season-of-the-witch-1982", type: "movie" },
+    { title: "Halloween 4: The Return of Michael Myers (1988)", url: "https://cinejoy.to/movie/11357-halloween-4-the-return-of-michael-myers-1988", type: "movie" },
+    { title: "Halloween 5: The Revenge of Michale Myers (1989)", url: "https://cinejoy.to/movie/11361-halloween-5-the-revenge-of-michael-myers-1989", type: "movie" },
+    { title: "Halloween: The Curse of Michael Myers (1995)", url: "https://cinejoy.to/movie/10987-halloween-the-curse-of-michael-myers-1995", type: "movie" },
+    { title: "Halloween: Twenty Years Later (1998)", url: "https://cinejoy.to/movie/11675-halloween-h20-20-years-later-1998", type: "movie" },
+    { title: "Halloween: Resurrection (2002)", url: "https://cinejoy.to/movie/11442-halloween-resurrection-2002", type: "movie" },
+    { title: "Halloween (2018)", url: "https://cinejoy.to/movie/424139-halloween-2018", type: "movie" },
+    { title: "Halloween Kills (2021)", url: "https://cinejoy.to/movie/610253-halloween-kills-2021", type: "movie" },
+    { title: "Halloween Ends (2022)", url: "https://cinejoy.to/movie/616820-halloween-ends-2022", type: "movie" },
+    { title: "Harry Potter and the Sorcerer Stone (2001)", url: "https://rrr.smart32grid.site/pwjj/c5/h6a90f70b8d237f94866b6cfc2c7d06afdb8423c6639e9e32eb7438752da577a6a106899eb0ee7bdfc502a43593daae1f624324193f8b49e14282d49119fc5cfe4c1a/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "Harry Potter and the Chamber of Secrets (2002)", url: "https://rrr.swift38path.site/p7vq/c5/h6a90f70b8d237f94866b6cfc296349bddedc7dc1328a913ba76f746f75bc68a8a9109b97e0ec62c0c941b3319bd0af04261e201d388d0eea0084d29053a146e35d/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "Harry Potter and the Prisoner of Azkaban (2004)", url: "https://drive.google.com/file/d/1Zu15ykGtc1xxKIKfAeUV_L1vAbCt--zO/view?usp=drivesdk", type: "movie" },
+    { title: "Harry Potter and the Goblet of Fire (2005)", url: "https://rrr.cloud31peak.site/p4gw/c5/h6a90f70b8d237f94866b6cfc286349bddedc7dc1328a916ea76974622fb260b2ef109b97e0ec62c0c941b3319bd3be02260e3b1b2b9d0ee30080c79353a146e35d/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "Harry Potter and the Order of the Phoenix", url: "https://drive.google.com/file/d/1eVK_s8Sp-Gvv1J65ocyLbwyqC7vkuoFK/view?usp=drivesdk", type: "movie" },
+    { title: "Harry Potter and the Half Blood Prince", url: "https://drive.google.com/file/d/1QfAnvJtU3oR7IV2CrN2qRx4vFThjbbe1/view", type: "movie" },
+    { title: "Harry Potter and the Deathly Hallows Part 1 (2010)", url: "https://drive.google.com/file/d/17UlhT2qVX10O8AksEEdWuaUqoVF78-oH/view?usp=drivesdk", type: "movie" },
+    { title: "Heartstopper Forever (2026)", url: "https://cinejoy.to/movie/1468683-heartstopper-forever-2026", type: "movie" },
+    { title: "Heathers (1989)", url: "https://youtu.be/07cV1tziX_g?is=vGC3tYhCRrZSueWe", type: "movie" },
+    { title: "Heathers (2014)", url: "https://youtu.be/PNU3LCtnH3c?is=Jusv0YzxhlmPQxnk", type: "movie" },
+    { title: "Help! (1965)", url: "https://dn721805.ca.archive.org/0/items/help_20201109/Help!.mp4", type: "movie" },
+    { title: "Hercules (1997)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1997%20-%20Hercules.mp4", type: "movie" },
+    { title: "Hetero (2021)", url: "https://youtu.be/4xIIdsOH-Bk?is=buhkP5N1ov-p_fGx", type: "movie" },
+    { title: "High School Musical (2006)", url: "https://drive.google.com/file/d/1tg84YPuUqFUMlVpGzjkhoEehBHV8W9ZF/view?usp=drivesdk", type: "movie" },
+    { title: "Hitch (2005)", url: "https://cinejoy.to/movie/8488-hitch-2005", type: "movie" },
+    { title: "Hocus Pocus (1993)", url: "https://cinejoy.to/movie/10439-hocus-pocus-1993", type: "movie" },
+    { title: "Hocus Pocus 2 (2022)", url: "https://cinejoy.to/movie/642885-hocus-pocus-2-2022", type: "movie" },
+    { title: "Honor Society (2022)", url: "https://drive.google.com/file/d/1DaY1X8s6s5ZwDoCIHttLtYvASfXWArP2/view?usp=drivesdk", type: "movie" },
+    { title: "How to Train Your Dragon (2010)", url: "https://cinejoy.to/movie/10191-how-to-train-your-dragon-2010", type: "movie" },
+    { title: "How to Train Your Dragon 2 (2014)", url: "https://cinejoy.to/movie/82702-how-to-train-your-dragon-2-2014", type: "movie" },
+    { title: "How to Train Your Dragon: The Hidden World (2019)", url: "https://cinejoy.to/movie/166428-how-to-train-your-dragon-the-hidden-world-2019", type: "movie" },
+    { title: "How to Train your Dragon (2025)", url: "https://cinejoy.to/movie/1087192-how-to-train-your-dragon-2025", type: "movie" },
+    { title: "Humanist Vampire Seeking Consenting Suicidal Person (2023)", url: "https://srv313.duchlizes.store/s4/0/5b81d01f557b92311d662863539b8d9630bbfb98d98dcb35a90611a2f8f7a807/UlUlCjKZEWO7-2MU9vGOCA/1773014684/storage8/movies/1726106610-24216998-humanist-vampire-seeking-consenting-suicidal-person-0/85feaef92ca34d47486e2ec72bbc8cdd.mp4/index.m3u8", type: "movie" },
+    { title: "Interview with the Vampire", url: "https://drive.google.com/file/d/1jrafk4IH7qQcaKesjfqnr1UJYwJ3QD55/view?usp=drivesdk", type: "movie" },
+    { title: "Iron Lung (2026)", url: "https://cinejoy.to/movie/1116201-iron-lung-2026", type: "movie" },
+    { title: "Jackie Brown (1997)", url: "https://drive.google.com/file/d/1ll_WcPqFt7KQImqmAqDJVou2WrUa0x3p/view?usp=drivesdk", type: "movie" },
+    { title: "Jennifers Body (2009)", url: "https://drive.google.com/file/d/1ZR1rpkbg4ef0ei0dH1gpnGz6Wyxu7zN6/view?usp=drivesdk", type: "movie" },
+    { title: "Jungle Book (1967)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1967%20-%20The%20Jungle%20Book.mp4", type: "movie" },
+    { title: "I Believe in Unicorns (2015)", url: "https://cinejoy.to/movie/253257-i-believe-in-unicorns-2015", type: "movie" },
+    { title: "I, Robot (2004)", url: "https://dn720300.ca.archive.org/0/items/duets-2000/I,%20Robot%20\\(2004\\", type: "movie" },
+    { title: "Inglorious Basterds (2009)", url: "https://drive.google.com/file/d/1_M4QQgztTYD5g-GtRJRNtllYCEiORpkX/view?usp=drivesdk", type: "movie" },
+    { title: "Invasion of the Body Snatchers (1978)", url: "https://drive.google.com/file/d/11hFFkX5km-J74J0ofrJ8brvWN1X_T46P/view?usp=drivesdk", type: "movie" },
+    { title: "I saw the Tv glow (2024)", url: "https://drive.google.com/file/d/1Y7r_UySq-nfFTJyT9tObf0rUhvHaWFqA/view?usp=drivesdk", type: "movie" },
+    { title: "Isle Of Dogs (2018)", url: "https://archive.org/details/isle-of-dogs_202205", type: "movie" },
+    { title: "IT (1990)", url: "https://drive.google.com/drive/folders/1DZ5-4lLUnGUIuEpZ5j3dtIbuPuV9uzg8", type: "movie" },
+    { title: "IT (2017)", url: "https://drive.google.com/file/d/1NKnvAJstayDrVqo-7nWMqXpiusvpK3GX/view", type: "movie" },
+    { title: "IT: Chapter Two (2019)", url: "https://cinejoy.to/movie/474350-it-chapter-two-2019", type: "movie" },
+    { title: "It’s the Great Pumpkin, Charlie Brown (1966)", url: "https://cinejoy.to/movie/13353-it-s-the-great-pumpkin-charlie-brown-1966", type: "movie" },
+    { title: "Kiki’s Delivery Service (1989)", url: "https://cinejoy.to/movie/16859-kiki-s-delivery-service-1989", type: "movie" },
+    { title: "Kill Bill: Vol. 1 (2003)", url: "https://drive.google.com/file/d/1Pb8e4eeEnA5NPjqoFRH6Bm-xODFtMIF4/view?usp=drivesdk", type: "movie" },
+    { title: "Kill Bill: Vol. 2 (2004)", url: "https://youtu.be/jQqmjYOTljs?si=NG-gezyEEZWpZPMA", type: "movie" },
+    { title: "Kill your Darlings (2013)", url: "https://drive.google.com/file/d/1JlOP0pYxyCAcubeJxCUsv01-YGgQtWrv/view?usp=drivesdk", type: "movie" },
+    { title: "Labyrinth (1986)", url: "https://drive.google.com/file/d/1-FXml96FRKEL2J-5vKCgUz9VaS1Gmtu2/view?usp=drivesdk", type: "movie" },
+    { title: "Legally Blonde (2001)", url: "https://dn710100.ca.archive.org/0/items/kabhi-khushi-kabhie-gham-720-p-bdrip-x-rg/Legally.Blonde.2001.720p.BrRip.x264.YIFY.mp4", type: "movie" },
+    { title: "Like Minds (2006)", url: "https://cinejoy.to/movie/15714-like-minds-2006", type: "movie" },
+    { title: "Lisa Frankenstein (2024)", url: "https://drive.google.com/file/d/1PMQZ0ApUpheSQpQSfzVbsrPy0yHB5Cuv/view?usp=drivesdk", type: "movie" },
+    { title: "Logan (2017)", url: "https://drive.google.com/file/d/1yBRjWuNuLaqQjiS_ZTYUMSQW8BF9rCcx/view?usp=drivesdk", type: "movie" },
+    { title: "Mamma Mia! (2008)", url: "https://cinejoy.to/movie/11631-mamma-mia-2008", type: "movie" },
+    { title: "Mamma Mia! Here We Go Again (2018)", url: "https://cinejoy.to/movie/458423-mamma-mia-here-we-go-again-2018", type: "movie" },
+    { title: "Maleficent (2014)", url: "https://drive.google.com/file/d/1yx66GkjBaCwjcMNoovV8w9yPNlZ7Q4Gu/view?usp=drivesdk", type: "movie" },
+    { title: "Maleficent: Mistress of Evil (2019)", url: "https://cinejoy.to/movie/420809-maleficent-mistress-of-evil-2019", type: "movie" },
+    { title: "Matilda (1996)", url: "https://archive.org/details/203fe130cf63eb5dc7a2adc12ec398bc6171d1c055d0cf64711bd5f9a9675bc5d81201d0f1641e00", type: "movie" },
+    { title: "MaXXXine (2024)", url: "https://drive.google.com/file/d/1y2PCz5T4ZGTW-sFmDghCMSBd3pBq3AkD/view?usp=drivesdk", type: "movie" },
+    { title: "Maze Runner: The Scorch Trials (2015)", url: "https://cinejoy.to/movie/294254-maze-runner-the-scorch-trials-2015", type: "movie" },
+    { title: "Maze Runner: The Death Cure (2018)", url: "https://cinejoy.to/movie/336843-maze-runner-the-death-cure-2018", type: "movie" },
+    { title: "Mean Girls (2004)", url: "https://dn720300.ca.archive.org/0/items/duets-2000/Mean%20Girls%20\\(2004\\", type: "movie" },
+    { title: "Mean Girls 2 (2011)", url: "https://cinejoy.to/movie/51481-mean-girls-2-2011", type: "movie" },
+    { title: "Mean Girls (2024)", url: "https://cinejoy.to/movie/673593-mean-girls-2024", type: "movie" },
+    { title: "Melancholia (2011)", url: "https://drive.google.com/file/d/1UAmnIWfjcDUWVpd4grLPcosd-BWBFxX7/view?usp=drivesdk", type: "movie" },
+    { title: "Midsommar (2019)", url: "https://drive.google.com/file/d/1gJTvvjTc8W0gLQm7l7uz88mq-Gm-hs-g/view?usp=drivesdk", type: "movie" },
+    { title: "Minions (2015)", url: "https://cinejoy.to/movie/211672-minions-2015", type: "movie" },
+    { title: "Minions: The Rise of Gru (2022)", url: "https://cinejoy.to/movie/438148-minions-the-rise-of-gru-2022", type: "movie" },
+    { title: "Minions and Monsters (2026)", url: "https://cinejoy.to/movie/1315772-minions-monsters-2026", type: "movie" },
+    { title: "Mirai (2018)", url: "https://archive.org/details/mirai-2018-1080p", type: "movie" },
+    { title: "Moana (2026)", url: "https://cinejoy.to/movie/1108427-moana-2026", type: "movie" },
+    { title: "Monkey Man (2024)", url: "https://archive.org/details/monkey-man-2024", type: "movie" },
+    { title: "Monster High: Fright On! (2011)", url: "https://cinejoy.to/movie/227257-monster-high-fright-on-2011", type: "movie" },
+    { title: "Monster High: Friday Night Frights (2011)", url: "https://cinejoy.to/movie/166747-monster-high-friday-night-frights-2012", type: "movie" },
+    { title: "Monster High: Escape from Skull Shores (2012)", url: "https://cinejoy.to/movie/167666-monster-high-escape-from-skull-shores-2012", type: "movie" },
+    { title: "Monster High: Why do Ghouls Fall in Love (2012)", url: "https://cinejoy.to/movie/167313-monster-high-why-do-ghouls-fall-in-love-2012", type: "movie" },
+    { title: "Monster High: Ghouls Rule (2012)", url: "https://cinejoy.to/movie/134632-monster-high-ghouls-rule-2012", type: "movie" },
+    { title: "Monster High: 13 Wishes (2013)", url: "https://youtu.be/R-RW8IyrRio?feature=shared", type: "movie" },
+    { title: "Monster High: Frights, Camera, Action! (2014)", url: "https://cinejoy.to/movie/260234-monster-high-frights-camera-action-2014", type: "movie" },
+    { title: "Monster High: Freaky Fusion (2014)", url: "https://cinejoy.to/movie/290727-monster-high-freaky-fusion-2014", type: "movie" },
+    { title: "Monster High: Boo York, Boo York (2015)", url: "https://youtu.be/fyRNsg-BA7s?is=1D0lhGKLmEaIimtG", type: "movie" },
+    { title: "Monster High: Haunted (2015)", url: "https://cinejoy.to/movie/324963-monster-high-haunted-2015", type: "movie" },
+    { title: "Monster High: Great Scarrier Reef (2016)", url: "https://cinejoy.to/movie/382581-monster-high-great-scarrier-reef-2016", type: "movie" },
+    { title: "Moonrise Kingdom (2012)", url: "https://drive.google.com/file/d/1sSfhF23Ahe9oRl0ZdY-Mqd64F3NulFqU/view?usp=drivesdk", type: "movie" },
+    { title: "Mortal Kombat (1995)", url: "https://drive.google.com/file/d/1temXH9CFHCd7gjIsu8TMCFiqxMy8jXfj/view?usp=drivesdk", type: "movie" },
+    { title: "Mother! (2017)", url: "https://drive.google.com/file/d/128iIkq8yIHuGZ_QKYkFfuwxIVXXwBbMw/view?usp=drivesdk", type: "movie" },
+    { title: "Mr. Peabody & Sherman", url: "https://archive.org/details/mr-peabody-and-sherman_202208", type: "movie" },
+    { title: "Mulan (1998)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1998%20-%20Mulan.mp4", type: "movie" },
+    { title: "My Babysitter is a Vampire", url: "https://youtu.be/dT16CBHER7A?is=94tg9827C2hmEKf9", type: "movie" },
+    { title: "My Little Pony: Equestria Girls (2013)", url: "https://youtu.be/9t2ecHt5KGk?feature=shared", type: "movie" },
+    { title: "My Little Pony: Equestria Girls - Friendship Games", url: "https://youtu.be/bYwQACpH9CM?feature=shared", type: "movie" },
+    { title: "My Little Pony: Equestria Girls - Rainbow Rocks (2014)", url: "https://youtu.be/onN0ITgCjs0?feature=shared", type: "movie" },
+    { title: "My Neighbour Totoro (1988)", url: "https://dn720704.ca.archive.org/0/items/totoro-fox-dub/TOTORO%20FOX%20DUB.mp4", type: "movie" },
+    { title: "Mysterious Skin (2004)", url: "https://drive.google.com/file/d/1J33KTsKpkMv1CRXn1SgYxlc0gENsatNX/view?usp=drivesdk", type: "movie" },
+    { title: "Nerdy Prudes Must Die (2023)", url: "https://youtu.be/PG3RDdyD_GQ?is=UggJ7nRic8LR6ovm", type: "movie" },
+    { title: "Night of the Living Dead (1968)", url: "https://youtu.be/H91BxkBXttE?is=S5Nm724wQu-54M1t", type: "movie" },
+    { title: "Nimona (2023)", url: "https://drive.google.com/file/d/1_1PbnBGYxLnKvcoFzvo9xcYEDgDtKDCh/view?usp=drivesdk", type: "movie" },
+    { title: "No Country for Old Men (2007)", url: "https://drive.google.com/file/d/16tGSn5_df2AtVyk6qjwwhea-1scjxZQt/view?usp=drivesdk", type: "movie" },
+    { title: "Obsession (2025)", url: "https://drive.google.com/file/d/1LPD2e59O1q5HY4mclH49xMA0ZbPPLOd_/view?usp=drivesdk", type: "movie" },
+    { title: "Ocean‘ 11 (2001)", url: "https://cinejoy.to/movie/161-ocean-s-eleven-2001", type: "movie" },
+    { title: "Ocean‘s 12 (2004)", url: "https://cinejoy.to/movie/163-ocean-s-twelve-2004", type: "movie" },
+    { title: "Ocean’s 13 (2007)", url: "https://cinejoy.to/movie/298-ocean-s-thirteen-2007", type: "movie" },
+    { title: "One Battle After Another (2025)", url: "https://rrr.swift38path.site/p5rm/c5/h6a90f70b8d237f94866b6cfc2c6349bddedc7dc1328a9162a73d397528fd73a8a103899eb0ee7bdfc502a43593daec0765432403379f49e14895c78c15fc5cfe4c1a/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "Once Upon a Time in Hollywood (2019)", url: "https://drive.google.com/file/d/1tdWH0KAKqWCPzD4-BeIzlga2RaZPdRHK/view?usp=drivesdk", type: "movie" },
+    { title: "On The Line (2001)", url: "https://drive.google.com/file/d/1UxJlwWC9llGYRUaeow8TmcXROMH5qT2_/view", type: "movie" },
+    { title: "Patema Inverted (2013)", url: "https://dn710108.ca.archive.org/0/items/reaktor-sakasama-no-patema-patema-inverted-1080p/%5BReaktor%5D%20Sakasama%20No%20Patema%20\\(Patema%20Inverted\\", type: "movie" },
+    { title: "Paranorman (2012)", url: "https://ia600309.us.archive.org/10/items/paranorman_202506/ParaNorman.ia.mp4", type: "movie" },
+    { title: "Pearl (2022)", url: "https://drive.google.com/file/d/1gpcg-ARHx0iVCFrnnxydBmsjml6KY12Q/view?usp=drivesdk", type: "movie" },
+    { title: "Pokémon The Movie (1999)", url: "https://dn720001.ca.archive.org/0/items/hexziasmovies/Pokemon%20The%20Movie%202000.mp4", type: "movie" },
+    { title: "Ponyo (2008)", url: "https://vimeo.com/1095932768", type: "movie" },
+    { title: "Priscilla (2023)", url: "https://drive.google.com/file/d/1le8jgLzDHfaT5jqLJNlapPLYj-RepN6s/view?usp=drivesdk", type: "movie" },
+    { title: "Project Hail Mary (2026)", url: "https://cinejoy.to/movie/687163-project-hail-mary-2026", type: "movie" },
+    { title: "Pulp Fiction (1994)", url: "https://drive.google.com/file/d/1sDjiK1PIlW_U7kDK4Qp5akHRwMen3mOb/view?usp=drivesdk", type: "movie" },
+    { title: "Pokémon Detective Pikachu (2019)", url: "https://drive.google.com/file/d/1IOR7L3RuRnsISAmKdcLMBM1iKDQXmibA/view?usp=drivesdk", type: "movie" },
+    { title: "Raising in The Sun (1989)", url: "https://youtu.be/jzfgwxENvLk?is=dZ2gfqcQS9ek0dSf", type: "movie" },
+    { title: "Real Genius (1985)", url: "https://drive.google.com/file/d/1UxJlwWC9llGYRUaeow8TmcXROMH5qT2_/view", type: "movie" },
+    { title: "Red White and Royal Blue (2023)", url: "https://archive.org/details/red.-white.-royal.-blue.-2023.1080p.-webrip.x-264.-aac-5.1-yts.-mx", type: "movie" },
+    { title: "Reservoir dogs (1992)", url: "https://drive.google.com/file/d/1hN-_R8pFT3Ng-8g-PwSz5JYclytM0ZDW/view?usp=drivesdk", type: "movie" },
+    { title: "Resident Evil: Welcome to Racoon City (2021)", url: "https://cinejoy.to/movie/460458-resident-evil-welcome-to-raccoon-city-2021", type: "movie" },
+    { title: "Resident Evil: Death Island (2023)", url: "https://drive.google.com/file/d/1umnXL6uQeyn9nr1scKTnsztMBXnnhkxs/view?usp=drivesdk", type: "movie" },
+    { title: "Rise Of The Guardians (2012)", url: "https://drive.google.com/file/d/1bMzgGKntjPQCT77WdUuE6djhSnkEBItC/view?usp=drivesdk", type: "movie" },
+    { title: "R.L Stine‘s The Haunting Hour: Don’t Think About It (2007)", url: "https://cinejoy.to/movie/21935-the-haunting-hour-don-t-think-about-it-2007", type: "movie" },
+    { title: "Robin Hood (1973)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1973%20-%20Robin%20Hood.mp4", type: "movie" },
+    { title: "SAW (2004)", url: "https://cinejoy.to/movie/176-saw-2004", type: "movie" },
+    { title: "SAW II (2005)", url: "https://cinejoy.to/movie/215-saw-ii-2005", type: "movie" },
+    { title: "SAW III (2006)", url: "https://cinejoy.to/movie/214-saw-iii-2006", type: "movie" },
+    { title: "SAW IV (2007)", url: "https://cinejoy.to/movie/663-saw-iv-2007", type: "movie" },
+    { title: "SAW V (2008)", url: "https://cinejoy.to/movie/11917-saw-v-2008", type: "movie" },
+    { title: "SAW VI (2009)", url: "https://cinejoy.to/movie/22804-saw-vi-2009", type: "movie" },
+    { title: "SAW 3D (2010)", url: "https://cinejoy.to/movie/41439-saw-3d-2010", type: "movie" },
+    { title: "JIGSAW (2017)", url: "https://cinejoy.to/movie/298250-jigsaw-2017", type: "movie" },
+    { title: "Spiral: From the Book of SAW (2021)", url: "https://cinejoy.to/movie/602734-spiral-from-the-book-of-saw-2021", type: "movie" },
+    { title: "SAW X (2023)", url: "https://cinejoy.to/movie/951491-saw-x-2023", type: "movie" },
+    { title: "Scary Movie (2000)", url: "https://cinejoy.to/movie/4247-scary-movie-2000", type: "movie" },
+    { title: "Scary Movie 2 (2001)", url: "https://cinejoy.to/movie/4248-scary-movie-2-2001", type: "movie" },
+    { title: "Scary Movie 3 (2003)", url: "https://cinejoy.to/movie/4256-scary-movie-3-2003", type: "movie" },
+    { title: "Scary Movie 4 (2006)", url: "https://cinejoy.to/movie/4257-scary-movie-4-2006", type: "movie" },
+    { title: "Scary Movie 5 (2013)", url: "https://cinejoy.to/movie/4258-scary-movie-5-2013", type: "movie" },
+    { title: "Scary Movie 6 (2026)", url: "https://cinejoy.to/movie/1273221-scary-movie-2026", type: "movie" },
+    { title: "Scooby-Doo (2002)", url: "https://cinejoy.to/movie/9637-scooby-doo-2002", type: "movie" },
+    { title: "Scooby-Doo 2 (2004)", url: "https://cinejoy.to/movie/11024-scooby-doo-2-monsters-unleashed-2004", type: "movie" },
+    { title: "Scooby-Doo: The Mystery Begins (2009)", url: "https://cinejoy.to/movie/22620-scooby-doo-the-mystery-begins-2009", type: "movie" },
+    { title: "Scooby-Doo! Curse of The Lake Monster (2010)", url: "https://cinejoy.to/movie/47533-scooby-doo-curse-of-the-lake-monster-2010", type: "movie" },
+    { title: "Scooby-Doo and the Ghoul School (1988)", url: "https://cinejoy.to/movie/13350-scooby-doo-and-the-ghoul-school-1988", type: "movie" },
+    { title: "Scooby-Doo and the Reluctant Wolf (1988)", url: "https://cinejoy.to/movie/37211-scooby-doo-and-the-reluctant-werewolf-1988", type: "movie" },
+    { title: "Scooby-Doo and the Witch‘s Ghost (1999)", url: "https://cinejoy.to/movie/17681-scooby-doo-and-the-witch-s-ghost-1999", type: "movie" },
+    { title: "Scooby-Doo: Monster Mexico (2003)", url: "https://cinejoy.to/movie/21956-scooby-doo-and-the-monster-of-mexico-2003", type: "movie" },
+    { title: "Scooby Doo and the Legend of the Vampire (2003)", url: "https://cinejoy.to/movie/30074-scooby-doo-and-the-legend-of-the-vampire-2003", type: "movie" },
+    { title: "Scooby-Doo in Where’s My Mummy (2005)", url: "https://cinejoy.to/movie/20558-scooby-doo-in-where-s-my-mummy-2005", type: "movie" },
+    { title: "Scooby-Doo: Pirates Ahoy (2006)", url: "https://cinejoy.to/movie/13355-scooby-doo-pirates-ahoy-2006", type: "movie" },
+    { title: "Scooby-Doo and the Samurai Sword (2009)", url: "https://cinejoy.to/movie/16390-scooby-doo-and-the-samurai-sword-2009", type: "movie" },
+    { title: "Scooby-Doo! Abracadabra-Doo (2010)", url: "https://cinejoy.to/movie/32916-scooby-doo-abracadabra-doo-2010", type: "movie" },
+    { title: "Scooby-Doo: Camp Scare (2010)", url: "https://cinejoy.to/movie/45752-scooby-doo-camp-scare-2010", type: "movie" },
+    { title: "Scooby-Doo: Music of the Vampire (2012)", url: "https://cinejoy.to/movie/81900-scooby-doo-music-of-the-vampire-2012", type: "movie" },
+    { title: "Scooby-Doo: Mask of The BlueFalcon (2012)", url: "https://cinejoy.to/movie/151535-scooby-doo-mask-of-the-blue-falcon-2012", type: "movie" },
+    { title: "Big Top Scooby-Doo (2012)", url: "https://cinejoy.to/movie/119321-big-top-scooby-doo-2012", type: "movie" },
+    { title: "Scooby-Doo: Stage Fright (2013)", url: "https://cinejoy.to/movie/203696-scooby-doo-stage-fright-2013", type: "movie" },
+    { title: "Scooby-Doo: Shaggy‘s Showdown (2017)", url: "https://cinejoy.to/movie/427564-scooby-doo-shaggy-s-showdown-2017", type: "movie" },
+    { title: "Scooby Doo and the Gourmet Ghost (2018)", url: "https://cinejoy.to/movie/533592-scooby-doo-and-the-gourmet-ghost-2018", type: "movie" },
+    { title: "Scooby-Doo and the Curse of the 13th Ghost (2019)", url: "https://cinejoy.to/movie/560066-scooby-doo-and-the-curse-of-the-13th-ghost-2019", type: "movie" },
+    { title: "Scoob! (2020)", url: "https://cinejoy.to/movie/385103-scoob-2020", type: "movie" },
+    { title: "Scooby-Doo: The Sword and The Scoob (2021)", url: "https://cinejoy.to/movie/682254-scooby-doo-the-sword-and-the-scoob-2021", type: "movie" },
+    { title: "Trick or Treat Scooby-Doo! (2022)", url: "https://cinejoy.to/movie/1015724-trick-or-treat-scooby-doo-2022", type: "movie" },
+    { title: "Scooby-Doo and Krypto, too! (2023)", url: "https://cinejoy.to/movie/1146348-scooby-doo-and-krypto-too-2023", type: "movie" },
+    { title: "Scott Pilgrim Vs The World", url: "https://drive.google.com/file/d/1b6QuoTt4cewzNXyhUZvqGtbZWvg8V-aT/view?usp=drivesdk", type: "movie" },
+    { title: "Scream (1996)", url: "https://cinejoy.to/movie/4232-scream-1996", type: "movie" },
+    { title: "Scream 2 (1997)", url: "https://cinejoy.to/movie/4233-scream-2-1997", type: "movie" },
+    { title: "Scream 3 (2000)", url: "https://cinejoy.to/movie/4234-scream-3-2000", type: "movie" },
+    { title: "Scream 4 (2011)", url: "https://drive.google.com/file/d/1pQjB6bSaqKkjl8pbCWFtbzP7IW7AmSf4/view?usp=drivesdk", type: "movie" },
+    { title: "Scream (2022)", url: "https://drive.google.com/file/d/1d2Fp1ZBz2wFlM4VqdVGE-9zA4MhcEi2K/view?usp=drivesdk", type: "movie" },
+    { title: "Scream VI (2023)", url: "https://drive.google.com/file/d/1zA2pu3Hw64razB69pJr_ma-m8-0-yN1x/view?usp=drivesdk", type: "movie" },
+    { title: "Scream 7 (2026)", url: "https://cinejoy.to/movie/1159559-scream-7-2026", type: "movie" },
+    { title: "Se7en (1995)", url: "https://drive.google.com/file/d/1IeQozYtMLIS8dkd4wNN5TzI8PJ8UPh9k/view?usp=drivesdk", type: "movie" },
+    { title: "Sex and the City (2008)", url: "https://rrr.swift38path.site/pqqp/c5/h6a90f70b8d237f94866b6cfc2e6349bddedc7dc1328a9169a739742d2ca66ea4ae109b97e0ec62c0c941b3319b96a805261e201d388d0eea0084d29053a146e35d/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "Sleepy Hollow (1999)", url: "https://cinejoy.to/movie/2668-sleepy-hollow-1999", type: "movie" },
+    { title: "Sonic the Hedgehog (2020)", url: "https://drive.google.com/file/d/1TOjPbqSF5UqnPrn1zFqEWvkUeBNiyMax/view", type: "movie" },
+    { title: "Sonic the Hedgehog 2 (2022)", url: "https://drive.google.com/file/d/1QTk7DHGr927bsbxKCp6FOGlaPIhUZk5e/view", type: "movie" },
+    { title: "Sonic the Hedgehog 3 (2024)", url: "https://drive.google.com/file/d/1UxJlwWC9llGYRUaeow8TmcXROMH5qT2_/view", type: "movie" },
+    { title: "Space Jam: A New Legacy (2021)", url: "https://dn720001.ca.archive.org/0/items/hexziasmovies/Space%20Jam%20A%20New%20Legacy.mp4", type: "movie" },
+    { title: "Spellbound (1945)", url: "https://archive.org/details/spellbound1945_202001", type: "movie" },
+    { title: "Spider-Man (2002)", url: "https://cinejoy.to/movie/557-spider-man-2002", type: "movie" },
+    { title: "Spider-Man 2 (2004)", url: "https://cinejoy.to/movie/558-spider-man-2-2004", type: "movie" },
+    { title: "Spider-Man 3 (2007)", url: "https://cinejoy.to/movie/559-spider-man-3-2007", type: "movie" },
+    { title: "Spider-Man: Homecoming (2017)", url: "https://drive.google.com/file/d/1BM05GR_A62Reth0OPOWC8EKc3338EWGl/view?usp=drivesdk", type: "movie" },
+    { title: "Spider-Man: Far from Home (2019)", url: "https://cinejoy.to/movie/429617-spider-man-far-from-home-2019", type: "movie" },
+    { title: "Spider-Man: No Way Home (2021)", url: "https://drive.google.com/file/d/1vs6nU61C9hZfSxM5QJXmHCWYXqPk1ZHp/view?usp=drivesdk", type: "movie" },
+    { title: "Spider-Man: Brand New Day (2026)", url: "https://cinejoy.to/movie/969681-spider-man-brand-new-day-2026", type: "movie" },
+    { title: "Spider-Man: Into The Spider-Verse", url: "https://dn710008.ca.archive.org/0/items/spider-man-into-the-spider-verse-2018-1080p-blu-ray-yts.-mx/Spider-Man%20Into%20The%20Spider-Verse%20%282018%29%20%5BBluRay%5D%20%5B1080p%5D%20%5BYTS.AM%5D/Spider-Man.Into.The.Spider-Verse.2018.1080p.BluRay.x264-%5BYTS.AM%5D.mp4", type: "movie" },
+    { title: "Spider-Man: Across The Spider-Verse", url: "https://dn720004.ca.archive.org/0/items/spider-man-across-the-spider-verse-2023-2160p-webrip-x-265-10bit-5.1-yts.-mx_202309/Spider-Man%20Across%20The%20Spider-Verse%20%282023%29%20%5B2160p%5D%20%5B4K%5D%20%5BWEB%5D%20%5B5.1%5D%20%5BYTS.MX%5D/Spider-Man.Across.The.Spider-Verse.2023.2160p.4K.WEB.x265.10bit.AAC5.1-%5BYTS.MX%5D.mp4", type: "movie" },
+    { title: "Spirited Away", url: "https://archive.org/details/spirited-away-2001-english", type: "movie" },
+    { title: "St. Elmo’s Fire (1985)", url: "https://drive.google.com/file/d/1pOA-XeEMGAzrgGps_0iTSYno-c9hubU6/view?usp=drivesdk", type: "movie" },
+    { title: "Steven Universe: The Movie (2019)", url: "https://drive.google.com/file/d/16UtvPleVdA5FIo0o9llLvL36SjMcC9mq/view?usp=drivesdk", type: "movie" },
+    { title: "Stand by me (1986)", url: "https://www.bilibili.tv/en/video/4798860289251328", type: "movie" },
+    { title: "Supergirl (2026)", url: "https://cinejoy.to/movie/1081003-supergirl-2026", type: "movie" },
+    { title: "Tangled (2010)", url: "https://drive.google.com/file/d/1eirKJt3ulfEusRJ6OM0jwpJ_YbL8iExC/view?usp=drivesdk", type: "movie" },
+    { title: "Tank Girl (1995)", url: "https://drive.google.com/file/d/1P0eLmJB5FVNbi2TywCxiX7nGXxycBrl0/view?usp=drivesdk", type: "movie" },
+    { title: "Taxi Driver (1976)", url: "https://drive.google.com/file/d/1GuUo9CsV3RGgLfE8jbJYSfYL1i3TgAQG/view?usp=drivesdk", type: "movie" },
+    { title: "Teenage Mutant Ninja Turtles (2007)", url: "https://drive.google.com/file/d/1HVUHYMA2PXbSdfsT7poIqOqjZAqQs2_G/view?usp=drivesdk", type: "movie" },
+    { title: "The Amazing Spider-Man (2012)", url: "https://cinejoy.to/movie/1930-the-amazing-spider-man-2012", type: "movie" },
+    { title: "The Amazing Spider-Man 2 (2014)", url: "https://cinejoy.to/movie/102382-the-amazing-spider-man-2-2014", type: "movie" },
+    { title: "The Avengers (2012)", url: "https://drive.google.com/file/d/167SljF-is7jAgoxKGpkqFVhp9BuaMEti/view", type: "movie" },
+    { title: "The Bad Guys 2 (2025)", url: "https://drive.google.com/file/d/17n4vyhsm2tiR3M8M61hsN3AT6FaQetX9/view?usp=drivesdk", type: "movie" },
+    { title: "The Black Cauldron (1985)", url: "https://drive.google.com/file/d/1D4y7KxYWuatnIT0xIfB4PB7r7LGy6WGV/view?usp=drivesdk", type: "movie" },
+    { title: "The Black Phone (2022)", url: "https://cinejoy.to/movie/756999-the-black-phone-2022", type: "movie" },
+    { title: "The Black Phone 2 (2025)", url: "https://cinejoy.to/movie/1197137-black-phone-2-2025", type: "movie" },
+    { title: "The Blob (1958)", url: "https://cinejoy.to/movie/8851-the-blob-1958", type: "movie" },
+    { title: "The Blob (1988)", url: "https://cinejoy.to/movie/9599-the-blob-1988", type: "movie" },
+    { title: "The Boxtrolls (2014)", url: "https://cinejoy.to/movie/170687-the-boxtrolls-2014", type: "movie" },
+    { title: "The Breakfast Club (1985)", url: "https://drive.google.com/file/d/1Ew7UuJ_1WD3k0XX7OHtdysEtKv5ObvDZ/view?usp=drivesdk", type: "movie" },
+    { title: "The Boy Who Cried Werewolf", url: "https://youtu.be/67HY4GOcU_g?is=tb1LVwl-q8I7K_5e", type: "movie" },
+    { title: "The Croods (2013)", url: "https://ok.ru/videoembed/3715347647031", type: "movie" },
+    { title: "The Croods: A New Age (2020)", url: "https://dn720001.ca.archive.org/0/items/hexziasmovies/The%20Croods%20A%20New%20Age.mp4", type: "movie" },
+    { title: "The Devil wears Prada (2006)", url: "https://cinejoy.to/movie/350-the-devil-wears-prada-2006", type: "movie" },
+    { title: "The Devil wears Prada 2 (2026)", url: "https://cinejoy.to/movie/1314481-the-devil-wears-prada-2-2026", type: "movie" },
+    { title: "The End of Oak Street (2026)", url: "https://cinejoy.to/movie/1101383-the-end-of-oak-street-2026", type: "movie" },
+    { title: "The Exorcist (1973)", url: "https://drive.google.com/file/d/1WeeAD0Ya5v-QQvBjaU8IIjlJAuL4_YOQ/view?usp=drivesdk", type: "movie" },
+    { title: "The Fifth Element (1997)", url: "https://drive.google.com/file/d/1bQ2DVcdNxsv_GJpXB4ell9_FUWL37aka/view?usp=drivesdk", type: "movie" },
+    { title: "The Goldfinch (2019)", url: "https://drive.google.com/file/d/1pECOt0Axf86Fem5SZ7tfU8apSN4_s_iS/view?usp=drivesdk", type: "movie" },
+    { title: "The Good Witch (2008)", url: "https://cinejoy.to/movie/32790-the-good-witch-2008", type: "movie" },
+    { title: "The Good Witch’s Garden (2009)", url: "https://cinejoy.to/movie/60821-the-good-witch-s-garden-2009", type: "movie" },
+    { title: "The Good Witch’s Gift (2010)", url: "https://cinejoy.to/movie/61005-the-good-witch-s-gift-2010", type: "movie" },
+    { title: "The Good Witch’s Family (2011)", url: "https://cinejoy.to/movie/81033-the-good-witch-s-family-2011", type: "movie" },
+    { title: "The Good Witch’s Charm (2012)", url: "https://cinejoy.to/movie/148656-the-good-witch-s-charm-2012", type: "movie" },
+    { title: "The Good Witch‘s Destiny (2013)", url: "https://cinejoy.to/movie/638186-the-good-witch-s-destiny-2013", type: "movie" },
+    { title: "The Good Witch’s Wonder (2014)", url: "https://cinejoy.to/movie/638187-the-good-witch-s-wonder-2014", type: "movie" },
+    { title: "The Gorge (2025)", url: "https://drive.google.com/file/d/1C-7oW1TnBBaaZEwAQKz7BAEVAahvqAiJ/view?usp=drivesdk", type: "movie" },
+    { title: "The Great Mouse Detective (1986)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1986%20-%20The%20Great%20Mouse%20Detective.mp4", type: "movie" },
+    { title: "The Hateful Eight (2015)", url: "https://drive.google.com/file/d/12Hezdl4YOnRqhzlmaL3HI6JDTlEP84fK/view?usp=drivesdk", type: "movie" },
+    { title: "The Hobbit: An Unexpected Journey (2012)", url: "https://cinejoy.to/movie/49051-the-hobbit-an-unexpected-journey-2012", type: "movie" },
+    { title: "The Hobbit: The Desolation of Smaug (2013)", url: "https://cinejoy.to/movie/57158-the-hobbit-the-desolation-of-smaug-2013", type: "movie" },
+    { title: "The Hobbit: The Battle of the Five Armies (2014)", url: "https://cinejoy.to/movie/122917-the-hobbit-the-battle-of-the-five-armies-2014", type: "movie" },
+    { title: "The House That Jack Built (2018)", url: "https://drive.google.com/file/d/101OnQ4qhJXiWntqpHmH6XN02kLkQFLKT/view?usp=drivesdk", type: "movie" },
+    { title: "The Hunger Games (2012)", url: "https://drive.google.com/file/d/1hpbKZaaN6V1mszSE35fjzvvTsZeYxPqh/view?usp=drivesdk", type: "movie" },
+    { title: "The Hunger Games: Mockingjay - Part 1 (2014)", url: "https://drive.google.com/file/d/1mWkV1TZfO6Xky1k1k7-J1uDnNazMCumM/view?usp=drivesdk", type: "movie" },
+    { title: "The Lego Movie 2 (2019)", url: "https://drive.google.com/file/d/1oMuid4c_tDKSMI9YpSBeYjkAxxwQUr2u/view?usp=drivesdk", type: "movie" },
+    { title: "The Lego Ninjago Movie (2017)", url: "https://drive.google.com/file/d/1NPaNOGle5AHzkgyzyGHOgtFktQ_-J71_/view?usp=drivesdk", type: "movie" },
+    { title: "The Little Mermaid (1989)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1989%20-%20The%20Little%20Mermaid.mp4", type: "movie" },
+    { title: "The Lion King (1994)", url: "https://dn720001.ca.archive.org/0/items/hexziasmovies/The%20Lion%20King.mp4", type: "movie" },
+    { title: "The Lion King II: Simbas Pride (1998)", url: "https://dn720403.ca.archive.org/0/items/schoolproject2_20200406/1998%20-%20The%20Lion%20King%202%20-%20Simba's%20Pride.mp4", type: "movie" },
+    { title: "The Lord of the Rings: The Fellowship of the Ring (2001)", url: "https://rrr.swift38path.site/pxm8/c5/h6a90f70b8d237f94866b6cfc2c7e06afdb8423c6639e9e32b9746b7575fe69b0f64e899eb0ee7bdfc502a43593daa11830432403379f49e14895c78c15fc5cfe4c1a/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "The Lord of the Rings: The two Towers (2002)", url: "https://rrr.fast33lane.site/p3qp/c5/h6a90f70b8d237f94866b6cfc296349bddedc7dc1328a9164a72d387521fe63a4eb4e899eb0ee7bdfc502a43593daea04784331152d8d0ee11c84c89d53a146e35d/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "The Lord of the Rings: The Return of the King (2003)", url: "https://rrr.elite39zone.site/pqqp/c5/h6a90f70b8d237f94866b6cfc2e6349bddedc7dc1328a913da73a74232dfe20e8a9109b97e0ec62c0c941b3319b96a80526083b1d2a9c0eeb0a8ac89d53a146e35d/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "The Martian (2015)", url: "https://dn720206.ca.archive.org/0/items/the.-martian.-2015.-extended.-1080p.-brrip.x-264.-aac-etrg/The.Martian.2015.EXTENDED.1080p.BRRip.x264.AAC-ETRG.mp4", type: "movie" },
+    { title: "The Mask (1994)", url: "https://rrr.smart32grid.site/plgv/c5/h6a90f70b8d237f94866b6cfc256349bddedc7dc1328a916ca76a742277ba20e6a1109b97e0ec62c0c941b3319b8bbe03261e3a152c8d0ee01797cf9c53a146e35d/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "The Mist (2007)", url: "https://youtu.be/Mwx6tpqhHTc?is=xGAG6_maxzamJMw9", type: "movie" },
+    { title: "The Nightmare Before Christmas (1993)", url: "https://cinejoy.to/movie/9479-the-nightmare-before-christmas-1993", type: "movie" },
+    { title: "The Notebook (2004)", url: "https://drive.google.com/file/d/1g0zJQSF2dvVgmVdnWCi_BeX1D4JpM7mW/view?usp=drivesdk", type: "movie" },
+    { title: "The Odyssey (2026)", url: "https://cinejoy.to/movie/1368337-the-odyssey-2026", type: "movie" },
+    { title: "The Outsiders", url: "https://archive.org/details/theoutsiderstheatricalcut", type: "movie" },
+    { title: "The Perks of Being a Wallflower (2012)", url: "https://www.dailymotion.com/video/x9aej3c", type: "movie" },
+    { title: "The Purge (2013)", url: "https://cinejoy.to/movie/158015-the-purge-2013", type: "movie" },
+    { title: "The Purge: Anarchy (2014)", url: "https://cinejoy.to/movie/238636-the-purge-anarchy-2014", type: "movie" },
+    { title: "The Purge: Election Year (2016)", url: "https://cinejoy.to/movie/316727-the-purge-election-year-2016", type: "movie" },
+    { title: "The First Purge (2018)", url: "https://cinejoy.to/movie/442249-the-first-purge-2018", type: "movie" },
+    { title: "The Forever Purge (2021)", url: "https://cinejoy.to/movie/602223-the-forever-purge-2021", type: "movie" },
+    { title: "The Rocky Horror Picture Show (1975)", url: "https://archive.org/details/the-rocky-horror-picture-show-1975-1080p", type: "movie" },
+    { title: "The Shining (1980)", url: "https://drive.google.com/file/d/1BJ-24OqRAM91ujUu5qJkxFQsoav9yDQU/view?usp=drivesdk", type: "movie" },
+    { title: "The Secret Garden (1993)", url: "https://ok.ru/videoembed/41807710892", type: "movie" },
+    { title: "The Secret Of Kells", url: "https://archive.org/details/the-secret-of-kells", type: "movie" },
+    { title: "The Silence of the Lambs", url: "https://archive.org/details/the-silence-of-the-lambs-1991_202405", type: "movie" },
+    { title: "The Sound Of Music (1965)", url: "https://dn721803.ca.archive.org/0/items/the-sound-of-music-1965-1080p/The%20Sound%20of%20Music%20\\(1965\\", type: "movie" },
+    { title: "The Spiderwick Chronicles (2008)", url: "https://cinejoy.to/movie/8204-the-spiderwick-chronicles-2008", type: "movie" },
+    { title: "The Super Mario Bros. Movie (2023)", url: "https://cinejoy.to/movie/502356-the-super-mario-bros-movie-2023", type: "movie" },
+    { title: "The Super Mario Galaxy Movie (2026)", url: "https://cinejoy.to/movie/1226863-the-super-mario-galaxy-movie-2026", type: "movie" },
+    { title: "The Texas Chainsaw Massacre (1974)", url: "https://drive.google.com/file/d/12lk01y89Vp5o8uz0oW6lskwEB4d3iFaR/view?usp=drivesdk", type: "movie" },
+    { title: "The Thing (1982)", url: "https://archive.org/details/the-thing_202010", type: "movie" },
+    { title: "The Thundermans Return (2024)", url: "https://cinejoy.to/movie/1094556-the-thundermans-return-2024", type: "movie" },
+    { title: "Clash of The Thundermans (2026)", url: "https://cinejoy.to/movie/1506560-clash-of-the-thundermans-2026", type: "movie" },
+    { title: "The Turning (2020)", url: "https://drive.google.com/file/d/1q_KEtFXNOzd8aLaRnMfTzRFIKfj1ry7Z/view?usp=drivesdk", type: "movie" },
+    { title: "The Virgin Suicides (1999)", url: "https://drive.google.com/file/d/1MiICZ4Q0OSRBuSG7itsF9D-4dw3p76Eo/view?usp=drivesdk", type: "movie" },
+    { title: "The Wizard of Oz (1939)", url: "https://drive.google.com/file/d/1ZfNxrVWB0U1Nwsrc03i5v9vGJtMJ9Ts3/view?usp=drivesdk", type: "movie" },
+    { title: "Thirteen (2003)", url: "https://cinejoy.to/movie/11023-thirteen-2003", type: "movie" },
+    { title: "Thunderbolts (2025)", url: "https://drive.google.com/file/d/1xW4I1g_9N5WaAY6yRYx-hkydbkWgwpLq/view?usp=drivesdk", type: "movie" },
+    { title: "Totally Spies! The Movie (2009)", url: "https://youtu.be/_zrgbA3FMVE?is=58pViAJ5jqcp2rHW", type: "movie" },
+    { title: "Toy Story (1995)", url: "https://cinejoy.to/movie/862-toy-story-1995", type: "movie" },
+    { title: "Toy Story 2 (1999)", url: "https://cinejoy.to/movie/863-toy-story-2-1999", type: "movie" },
+    { title: "Toy Story 3 (2010)", url: "https://cinejoy.to/movie/10193-toy-story-3-2010", type: "movie" },
+    { title: "Toy Story 4 (2019)", url: "https://cinejoy.to/movie/301528-toy-story-4-2019", type: "movie" },
+    { title: "Toy Story 5 (2026)", url: "https://cinejoy.to/movie/1084244-toy-story-5-2026", type: "movie" },
+    { title: "True Romance (1993)", url: "https://drive.google.com/file/d/1vOrmL4TQoOVlj-THdY6RBEJaCI9tyRsd/view?usp=drivesdk", type: "movie" },
+    { title: "Twilight (2008)", url: "https://cinejoy.to/movie/8966-twilight-2008", type: "movie" },
+    { title: "Twilight: New Moon (2009)", url: "https://cinejoy.to/movie/18239-the-twilight-saga-new-moon-2009", type: "movie" },
+    { title: "Twilight: Eclipse (2010)", url: "https://cinejoy.to/movie/24021-the-twilight-saga-eclipse-2010", type: "movie" },
+    { title: "Twilight: Breaking Dawn Part 1 (2011)", url: "https://cinejoy.to/movie/50619-the-twilight-saga-breaking-dawn-part-1-2011", type: "movie" },
+    { title: "Twilight: Breaking Dawn Part 2 (2012)", url: "https://cinejoy.to/movie/50620-the-twilight-saga-breaking-dawn-part-2-2012", type: "movie" },
+    { title: "Twitches (2005)", url: "https://cinejoy.to/movie/21481-twitches-2005", type: "movie" },
+    { title: "Twitches Too (2007)", url: "https://cinejoy.to/movie/46169-twitches-too-2007", type: "movie" },
+    { title: "Up The Academy (1980)", url: "https://dn721906.ca.archive.org/0/items/up-the-academy_202401/Up%20the%20Academy.mp4", type: "movie" },
+    { title: "Us (2019)", url: "https://drive.google.com/file/d/1J-9r7bkF69zPD2BP3YaKmyM8oAgGTuUu/view?usp=drivesdk", type: "movie" },
+    { title: "Valerian (2017)", url: "https://cinejoy.to/movie/339964-valerian-and-the-city-of-a-thousand-planets-2017", type: "movie" },
+    { title: "Velvet Goldmine (1998)", url: "https://drive.google.com/file/d/10n6Q0AwEw38JtZgJm1eY1YSx-ds0uxow/view?usp=drivesdk", type: "movie" },
+    { title: "Van Helsing (2004)", url: "https://cinejoy.to/movie/7131-van-helsing-2004", type: "movie" },
+    { title: "Venom (2018)", url: "https://drive.google.com/file/d/1iRN197XeJCQnZGza599ZTXsayEG1mdRB/view?usp=drivesdk", type: "movie" },
+    { title: "Venom: Let There Be Carnage (2021)", url: "https://drive.google.com/file/d/1N6kL0SF4qR6wFpwfGIZUZjFnz3lQDGGz/view", type: "movie" },
+    { title: "Venom: The Last Dance (2024)", url: "https://cinejoy.to/movie/912649-venom-the-last-dance-2024", type: "movie" },
+    { title: "War For The Planet Of The Apes (2017)", url: "https://dn720001.ca.archive.org/0/items/hexziasmovies/War%20For%20The%20Planet%20Of%20The%20Apes.mp4", type: "movie" },
+    { title: "Whiplash", url: "https://drive.google.com/file/d/1p9XSG1xqnZRkNjrbBPKNHDxcVVQNgySB/view?pli=1", type: "movie" },
+    { title: "White Chicks (2004)", url: "https://archive.org/details/movie-white-chicks-2004", type: "movie" },
+    { title: "Wolfwalkers (2020)", url: "https://cinejoy.to/movie/441130-wolfwalkers-2020", type: "movie" },
+    { title: "X (2022)", url: "https://drive.google.com/file/d/1WcNKiX0gHXDtCw2YbNKgW1LnHWA-DgB5/view?usp=drivesdk", type: "movie" },
+    { title: "Young Hearts (2024)", url: "https://drive.google.com/file/d/1PizhGZlQUjl0cupKmOlt59tgiG3EQWo7/view?usp=drivesdk", type: "movie" },
+    { title: "Zootopia (2016)", url: "https://rrr.cloud31peak.site/pwjj/c5/h6a90f70b8d237f94866b6cfc2c7c06afdb8423c6639e9e32ec7439756af361eaab5b899eb0ee7bdfc502a43593daae1f62433418318c59e14195c39916fc5cfe4c1a/list,Ktm0Vt9-cJyXbGG_O3gV_5vGK-kpiQ.m3u8", type: "movie" },
+    { title: "Zootopia 2 (2025)", url: "https://cinejoy.to/movie/1084242-zootopia-2-2025", type: "movie" },
+    { title: "12 Angry Men (1957)", url: "https://drive.google.com/file/d/1jXHuLoy3eYhKnO-aU8f5scGltgp_zLSS/view?usp=drivesdk", type: "movie" },
+    { title: "28 Days Later", url: "https://drive.google.com/file/d/1-GG_fGnyF7CPSIYDgF5rpx-J7bhSKnjk/view?usp=drivesdk", type: "movie" },
+    { title: "28 Weeks Later (2007)", url: "https://cinejoy.to/movie/1562-28-weeks-later-2007", type: "movie" },
+    { title: "28 Years Later (2025)", url: "https://cinejoy.to/movie/1100988-28-years-later-2025", type: "movie" },
+    { title: "28 Years Later: The Bone Temple (2026)", url: "https://cinejoy.to/movie/1272837-28-years-later-the-bone-temple-2026", type: "movie" },
+    { title: "(500) Days of Summer (2009)", url: "https://cinejoy.to/movie/19913-500-days-of-summer-2009", type: "movie" }
 ];
 
+const shows = [
+    { title: "American Horror Story S1-10", url: "https://drive.google.com/drive/folders/1-75TiAuL5xghccK23hKUth7vqiuK2QBn", type: "show" },
+    { title: "Among Us (Episode 1 is on YouTube)", url: "https://drive.google.com/drive/folders/1KQrWdt94UlNAsgecshyojoAXKdPVhT_4", type: "show" },
+    { title: "Arcane S1", url: "https://drive.google.com/drive/folders/1iHPJReiaSIzKLt_JBR_2FFkhdaScOZBz", type: "show" },
+    { title: "Arcane S2", url: "https://drive.google.com/drive/folders/1-YlQgRPH5hlT4iGgI2fV2-ldapdYWJ9X", type: "show" },
+    { title: "Avatar: The Last Airbender", url: "https://drive.google.com/drive/folders/1OFWN8hASAuNWSn9mK2gANJ0PSQhvIA2r", type: "show" },
+    { title: "Chainsaw Man S1", url: "https://drive.google.com/drive/folders/1wQsWpOA8Pu09QDFPZ4CEhEQe0MNJaen-", type: "show" },
+    { title: "Deadly Class (2019)", url: "https://cinejoy.to/series/75663-deadly-class-2019", type: "show" },
+    { title: "Demon Slayer", url: "https://drive.google.com/drive/folders/1KZpVmcEVIXXle989eFtujR2sxvyWWO8D", type: "show" },
+    { title: "Downtown", url: "https://youtube.com/playlist?list=PLjLt9Ko9Xnsicvt79T6plaoDguyPpzbuM\\&si=TM7eXYnlA06ljcvJ", type: "show" },
+    { title: "House", url: "https://drive.google.com/drive/folders/1P9FYrm-9IOsDE61KkCTIAevBkIBkTJxT", type: "show" },
+    { title: "Gilmore Girls (2000)", url: "https://cinejoy.to/series/4586-gilmore-girls-2000", type: "show" },
+    { title: "Gilmore Girls: A Year in the Life (2016)", url: "https://cinejoy.to/series/68799-gilmore-girls-a-year-in-the-life-2016", type: "show" },
+    { title: "Goosebumps", url: "https://youtu.be/tb32iU1VAmY?is=MlCusjwqbqAg0wR_", type: "show" },
+    { title: "Gravity Falls", url: "https://archive.org/details/one-crazy-summer_202408", type: "show" },
+    { title: "Hannibal S1", url: "https://drive.google.com/drive/folders/1Cel8ZR0MVrcv_FK3Apxk6Ucl06mg_jPM", type: "show" },
+    { title: "Hannibal S2", url: "https://drive.google.com/drive/folders/1ohZc1o3W7gUZFeT_hxloZpKrpTOU8IJj", type: "show" },
+    { title: "Hannibal S3", url: "https://drive.google.com/drive/folders/1yrUa-bcsUwD3sB3z03x-cpEZKxiAqMXg", type: "show" },
+    { title: "Hazbin Hotel", url: "https://archive.org/details/hazbin-hotel_202512", type: "show" },
+    { title: "Heartstopper (2022)", url: "https://cinejoy.to/series/124834-heartstopper-2022", type: "show" },
+    { title: "Heated Rivalry S1", url: "https://drive.google.com/drive/folders/15YTrDc3LltsoUs55zZ-I34XfwPQh4dQr", type: "show" },
+    { title: "Hello Kitty and Friends Supercute Adventures", url: "https://youtube.com/playlist?list=PLqzv7LtjMohGDJS0LeaDWlxBsNL-HHs8N\\&si=m9dw0NbcqN6Yq89q", type: "show" },
+    { title: "Henry Danger (2014)", url: "https://cinejoy.to/series/61852-henry-danger-2014", type: "show" },
+    { title: "IT Welcome to Derry", url: "https://drive.google.com/drive/folders/1nl8QD9jezyXlZPs0JYqOjCWtd-A5rtmY", type: "show" },
+    { title: "Komi Can’t Communicate S1", url: "https://drive.google.com/drive/folders/1VsPKRjlrawm0bdv-1Snstp0PTtcxi_3U", type: "show" },
+    { title: "Komi Can’t Communicate S2", url: "https://drive.google.com/drive/folders/1SgZ_eimnMG9lWM7IJTOmpZeFGHYYmLPn", type: "show" },
+    { title: "Kipo and the Age of  Wonderbeasts", url: "https://drive.google.com/drive/folders/1WdsldPOGka4kXQtaPknWsjhaHqkGASn9", type: "show" },
+    { title: "Little Witch Academia", url: "https://archive.org/details/little-witch-academia-english-sub", type: "show" },
+    { title: "Monster: The Jeffrey Dahmer Story (2022)", url: "https://cinejoy.to/series/113988-dahmer-monster-the-jeffrey-dahmer-story-2022", type: "show" },
+    { title: "Monsters: The Lyle and Erik Menendez Story (2024)", url: "https://cinejoy.to/series/225634-monsters-the-lyle-and-erik-menendez-story-2024", type: "show" },
+    { title: "Monster: The Ed Gein Story (2025)", url: "https://cinejoy.to/series/286801-monster-the-ed-gein-story-2025", type: "show" },
+    { title: "My Hero Academia", url: "https://www.wco.tv/anime/my-hero-academia", type: "show" },
+    { title: "NANA", url: "https://archive.org/details/nana.-s-01-e-04_202508", type: "show" },
+    { title: "Neon Genesis Evangelion (1995)", url: "https://archive.org/details/evadubbed", type: "show" },
+    { title: "Pokémon", url: "https://www.pokeflix.tv/index/", type: "show" },
+    { title: "Rick and Morty", url: "https://cinejoy.to/series/60625-rick-and-morty-2013", type: "show" },
+    { title: "Ruby Gloom", url: "https://youtube.com/playlist?list=PLUIixndCOJ8yMeztWQnV3ClZ8rjtX6VL5\\&si=LTXTt1sVImFxC9ob", type: "show" },
+    { title: "Scooby-Doo: Where Are you! (1969)", url: "https://cinejoy.to/series/926-scooby-doo-where-are-you-1969", type: "show" },
+    { title: "The New Scooby-Doo Movies (1972)", url: "https://cinejoy.to/series/1068-the-new-scooby-doo-movies-1972", type: "show" },
+    { title: "Scooby-Doo and Scrappy-Doo (1979)", url: "https://cinejoy.to/series/6005-scooby-doo-and-scrappy-doo-1979", type: "show" },
+    { title: "What’s New Scooby-Doo? (2002)", url: "https://cinejoy.to/series/652-what-s-new-scooby-doo-2002", type: "show" },
+    { title: "Scooby-Doo: Mystery Incorporated (2010)", url: "https://cinejoy.to/series/18123-scooby-doo-mystery-incorporated-2010", type: "show" },
+    { title: "Be Cool Scooby-Doo! (2015)", url: "https://cinejoy.to/series/64228-be-cool-scooby-doo-2015", type: "show" },
+    { title: "Scooby-Doo and Guess Who? (2019)", url: "https://cinejoy.to/series/88367-scooby-doo-and-guess-who-2019", type: "show" },
+    { title: "Scott Pilgrim Takes Off", url: "https://drive.google.com/drive/folders/1-7n2LOE0Q8I82RSv78o3nuQlWlaX05ua", type: "show" },
+    { title: "She-Ra and the Princess of Power S1", url: "https://drive.google.com/drive/folders/1nyh29WbMM4PB_JyL2244ewLOmlQ7qYPR", type: "show" },
+    { title: "She-Ra and the Princess of Power S2", url: "https://drive.google.com/drive/folders/13ukP0L8nJx7mX9HpNzxVwC___-C4Q9YW", type: "show" },
+    { title: "She-Ra and the Princess of Power S3", url: "https://drive.google.com/drive/folders/1HFuNwR20H_alml20AA4L9plJiFwsuAc7", type: "show" },
+    { title: "She-Ra and the Princess of Power S4", url: "https://drive.google.com/drive/folders/1M_Ol1o2O6wb9hO7wiiT8mQF7zbyWIMQq", type: "show" },
+    { title: "She-Ra and the Princess of Power S5", url: "https://drive.google.com/drive/folders/1-2joes_fTZcSZWfD6yw82i9LVuvy_YNq", type: "show" },
+    { title: "Sherlock (2010)", url: "https://archive.org/details/BBC_Sherlock2010", type: "show" },
+    { title: "Skins (2007)", url: "https://cinejoy.to/series/900-skins-2007", type: "show" },
+    { title: "South Park", url: "https://www.southpark.de/en/seasons/south-park", type: "show" },
+    { title: "Teen Titans", url: "https://drive.google.com/drive/folders/1KR-JV53PrEuqifLK_4_VsZgXuJ8oF0vt", type: "show" },
+    { title: "The Amazing Digital Circus", url: "https://youtube.com/playlist?list=PLHovnlOusNLgvAbnxluXCVB3KLj8e4QB-\\&si=PgDX-BTxRhPQ6bwU", type: "show" },
+    { title: "The Amazing World of Gumball (2011)", url: "https://cinejoy.to/series/37606-the-amazing-world-of-gumball-2011", type: "show" },
+    { title: "The Beatles", url: "https://archive.org/details/thebeatlescartoon_201804", type: "show" },
+    { title: "The Mighty Nein S1", url: "https://drive.google.com/drive/folders/12hv_Xo1xlUSJXpBZhGG5IlCvd_ccVIcN", type: "show" },
+    { title: "The Owl House", url: "https://drive.google.com/drive/folders/1bYhmk0ClvZttUXaawxe8YKqOlTQofYKC", type: "show" },
+    { title: "The Pitt (2025)", url: "https://cinejoy.to/series/250307-the-pitt-2025", type: "show" },
+    { title: "Total Drama Island", url: "https://archive.org/details/total-drama-all-episodes", type: "show" },
+    { title: "Twelve Forever", url: "https://drive.google.com/drive/folders/1r-hUnoANt3XreuiIImE6-jHVdXkmiud8", type: "show" },
+    { title: "Metal Family", url: "https://youtube.com/playlist?list=PLtpFJ75Dkdv7_lCsFrW6koiWegj7U0F3t\\&si=B2M9CWho42KuUCCD", type: "show" },
+    { title: "Monster High", url: "https://youtu.be/TAZs98t47zA?feature=shared", type: "show" },
+    { title: "My Babysitter is a Vampire S1", url: "https://youtube.com/playlist?list=PLdVizrmPtnSra_Gie59aQhn57DHvuK0U8\\&si=i5iZTxFLZ5qoTSEE", type: "show" },
+    { title: "My Babysitter is a Vampire S2", url: "https://youtube.com/playlist?list=PLdVizrmPtnSrFoVIdGJTBE99LiyiLogfB\\&si=n9vGZ0COHDcEg_7F", type: "show" },
+    { title: "My Little Pony", url: "https://youtube.com/playlist?list=PLNmbST1519bJZDVvHOTdZ-dnjgpLMFCFv\\&si=RcHJXJdO43HiWhpq", type: "show" },
+    { title: "Over The Garden Wall", url: "https://1moviesz.to/watch/tv-adventure-time-dnlb4", type: "show" },
+    { title: "Percy Jackson and the Olympians", url: "https://drive.google.com/drive/folders/1H_mV9OfggT8DOfQTOXe1KLdkDswzB_GT", type: "show" },
+    { title: "Pretty Little Liars (2010)", url: "https://cinejoy.to/series/31917-pretty-little-liars-2010", type: "show" },
+    { title: "Voltron", url: "https://drive.google.com/drive/folders/1PUhbIEyKEEONW4K-9Y8W0A4Ll7OK6fZ_", type: "show" },
+    { title: "Weak Hero (2022)", url: "https://cinejoy.to/series/200709-weak-hero-2022", type: "show" },
+    { title: "Wednesday S2", url: "https://drive.google.com/drive/folders/1ZYPAvkQHJJIDYKfkjU2xTaDZQknSSoRI", type: "show" },
+    { title: "Yo-Kai Watch", url: "https://archive.org/details/yo-kai.watch.s01e74.dubbed.720p.hdtv.x264-w4f", type: "show" },
+    { title: "Z Nation (2014)", url: "https://drive.google.com/drive/folders/1muf7_sntFPrBu3HZwZKFayaQ4C0SuQDK", type: "show" }
+];
 
-/* ============================================================
-   ELEMENTS
-============================================================ */
+const allItems = [...movies, ...shows];
+let activeType = "movie";
+let currentIndex = -1;
+let currentItem = null;
 
-const iframe =
-    document.getElementById("player-iframe");
+const iframe = document.getElementById("iframe");
+const video = document.getElementById("video");
+const placeholder = document.getElementById("placeholder");
+const player = document.getElementById("player");
+const titleEl = document.getElementById("title");
+const labelEl = document.getElementById("label");
+const notice = document.getElementById("notice");
+const list = document.getElementById("list");
+const search = document.getElementById("search");
+const count = document.getElementById("count");
+const listHeader = document.getElementById("listHeader");
 
-const placeholder =
-    document.getElementById("placeholder");
-
-const currentTitle =
-    document.getElementById("currentTitle");
-
-const nowLabel =
-    document.getElementById("nowLabel");
-
-const notice =
-    document.getElementById("notice");
-
-const movieList =
-    document.getElementById("movieList");
-
-const searchEl =
-    document.getElementById("search");
-
-const movieCount =
-    document.getElementById("movieCount");
-
-const listHeader =
-    document.getElementById("listHeader");
-
-const playerWrap =
-    document.getElementById("playerWrap");
-
-const fullscreenBtn =
-    document.getElementById("fullscreenBtn");
-
-const theaterBtn =
-    document.getElementById("theaterBtn");
-
-const nextBtn =
-    document.getElementById("nextBtn");
-
-
-let currentMovie = -1;
-
-
-/* ============================================================
-   GOOGLE DRIVE
-============================================================ */
-
-function getDriveId(url) {
-
-    let match =
-        url.match(/\/file\/d\/([^\/\?]+)/);
-
-    if (match)
-        return match[1];
-
-    match =
-        url.match(/[?&]id=([^&]+)/);
-
-    return match
-        ? match[1]
-        : null;
+function escapeHtml(s){
+  const d=document.createElement("div");
+  d.textContent=s;
+  return d.innerHTML;
 }
 
-
-function previewUrl(url) {
-
-    const id =
-        getDriveId(url);
-
-    return id
-        ? "https://drive.google.com/file/d/" +
-          id +
-          "/preview"
-        : url;
+function driveFileId(url){
+  const m=url.match(/\/file\/d\/([^/?]+)/) || url.match(/[?&]id=([^&]+)/);
+  return m ? m[1] : null;
 }
 
-
-/* ============================================================
-   SECURITY
-============================================================ */
-
-function escapeHtml(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
+function driveFolderId(url){
+  const m=url.match(/\/folders\/([^/?]+)/);
+  return m ? m[1] : null;
 }
 
-
-/* ============================================================
-   LOAD MOVIE
-============================================================ */
-
-function loadMovie(index) {
-
-    if (
-        index < 0 ||
-        index >= movies.length
-    ) {
-        return;
-    }
-
-    currentMovie = index;
-
-    const movie =
-        movies[index];
-
-    currentTitle.textContent =
-        movie.title;
-
-    nowLabel.style.display =
-        "block";
-
-    notice.style.display =
-        "block";
-
-    iframe.style.display =
-        "block";
-
-    placeholder.style.display =
-        "none";
-
-    iframe.src =
-        previewUrl(movie.url);
-
-    renderMovies();
-
-    setTimeout(() => {
-
-        const active =
-            movieList.querySelector(".active");
-
-        if (active) {
-
-            active.scrollIntoView({
-                block: "nearest",
-                behavior: "smooth"
-            });
-
-        }
-
-    }, 50);
+function youtubeEmbed(url){
+  let m=url.match(/youtu\.be\/([^?]+)/);
+  if(m) return "https://www.youtube.com/embed/"+m[1];
+  m=url.match(/[?&]v=([^&]+)/);
+  if(m) return "https://www.youtube.com/embed/"+m[1];
+  m=url.match(/youtube\.com\/playlist\?list=([^&]+)/);
+  if(m) return "https://www.youtube.com/embed/videoseries?list="+m[1];
+  return null;
 }
 
-
-/* ============================================================
-   RENDER MOVIES
-============================================================ */
-
-function renderMovies() {
-
-    const q =
-        searchEl.value
-            .toLowerCase()
-            .trim();
-
-    movieList.innerHTML = "";
-
-    let found = 0;
-
-    movies.forEach((movie, i) => {
-
-        if (
-            q &&
-            !movie.title
-                .toLowerCase()
-                .includes(q)
-        ) {
-            return;
-        }
-
-        found++;
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "movie" +
-            (
-                i === currentMovie
-                    ? " active"
-                    : ""
-            );
-
-        item.innerHTML =
-
-            '<span class="num">' +
-                String(i + 1).padStart(2, "0") +
-            '</span>' +
-
-            '<span class="name">' +
-                escapeHtml(movie.title) +
-            '</span>' +
-
-            '<span class="play-icon">▶</span>';
-
-        item.onclick =
-            () => loadMovie(i);
-
-        movieList.appendChild(item);
-
-    });
-
-
-    if (found === 0) {
-
-        movieList.innerHTML =
-            '<div class="empty">' +
-            'No movies match "' +
-            escapeHtml(searchEl.value) +
-            '"' +
-            '</div>';
-
-    }
-
-
-    movieCount.textContent =
-        found + " of " + movies.length;
-
-    if (q) {
-
-        listHeader.innerHTML =
-            "<span>Search results</span>";
-
-    } else {
-
-        listHeader.innerHTML =
-            "<span>All movies</span>";
-
-    }
+function isDirectMedia(url){
+  return /\.(mp4|webm|ogg|m3u8)(\?|$)/i.test(url);
 }
 
-
-/* ============================================================
-   SEARCH
-============================================================ */
-
-searchEl.addEventListener(
-    "input",
-    renderMovies
-);
-
-
-/* ============================================================
-   FULLSCREEN
-============================================================ */
-
-async function toggleFullscreen() {
-
-    try {
-
-        if (!document.fullscreenElement) {
-
-            await playerWrap.requestFullscreen();
-
-        } else {
-
-            await document.exitFullscreen();
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Fullscreen error:",
-            error
-        );
-
-    }
+function sourceUrl(item){
+  const fileId=driveFileId(item.url);
+  if(fileId) return "https://drive.google.com/file/d/"+fileId+"/preview";
+  const yt=youtubeEmbed(item.url);
+  if(yt) return yt;
+  return item.url;
 }
 
+function resetPlayer(){
+  iframe.style.display="none";
+  video.style.display="none";
+  iframe.src="about:blank";
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+}
 
-fullscreenBtn.addEventListener(
-    "click",
-    toggleFullscreen
-);
+function loadItem(item,index){
+  currentItem=item;
+  currentIndex=index;
 
+  titleEl.textContent=item.title;
+  labelEl.style.display="block";
+  notice.style.display="block";
+  placeholder.style.display="none";
 
-/* Update button text */
+  resetPlayer();
 
-document.addEventListener(
-    "fullscreenchange",
-    () => {
+  const folderId=driveFolderId(item.url);
+  const yt=youtubeEmbed(item.url);
 
-        if (document.fullscreenElement) {
+  if(isDirectMedia(item.url)){
+    video.src=item.url;
+    video.style.display="block";
+    video.play().catch(()=>{});
+  }else if(driveFileId(item.url)){
+    iframe.src=sourceUrl(item);
+    iframe.style.display="block";
+  }else if(folderId){
+    // Drive folders are best opened directly; embedding a folder is inconsistent across browsers.
+    iframe.src="https://drive.google.com/drive/folders/"+folderId;
+    iframe.style.display="block";
+  }else if(yt){
+    iframe.src=yt;
+    iframe.style.display="block";
+  }else{
+    iframe.src=item.url;
+    iframe.style.display="block";
+  }
 
-            fullscreenBtn.innerHTML =
-                "⛶ Exit Fullscreen";
+  render();
+}
 
-        } else {
+function getVisibleItems(){
+  const q=search.value.trim().toLowerCase();
+  const source=activeType==="movie" ? movies : shows;
+  return source.filter(x=>!q || x.title.toLowerCase().includes(q));
+}
 
-            fullscreenBtn.innerHTML =
-                "⛶ Fullscreen";
+function render(){
+  const items=getVisibleItems();
+  list.innerHTML="";
 
-        }
+  items.forEach((item,i)=>{
+    const globalIndex=allItems.indexOf(item);
+    const el=document.createElement("div");
+    el.className="item"+(item===currentItem ? " active":"");
+    el.innerHTML=
+      '<span class="num">'+String(i+1).padStart(2,"0")+'</span>'+
+      '<span class="name">'+escapeHtml(item.title)+'</span>'+
+      (item.type==="show" ? '<span class="badge">Show</span>' : '<span class="badge">Movie</span>');
+    el.onclick=()=>loadItem(item,globalIndex);
+    list.appendChild(el);
+  });
 
-    }
-);
+  if(!items.length){
+    list.innerHTML='<div class="empty">Nothing found.</div>';
+  }
 
+  count.textContent=items.length+" "+(activeType==="movie"?"movies":"shows");
+  listHeader.textContent=search.value.trim()
+    ? "Search results"
+    : (activeType==="movie" ? "All movies" : "All shows");
+}
 
-/* ============================================================
-   THEATER MODE
-============================================================ */
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.onclick=()=>{
+    activeType=tab.dataset.type;
+    currentIndex=-1;
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    tab.classList.add("active");
+    render();
+  };
+});
 
-theaterBtn.addEventListener(
-    "click",
-    () => {
+search.addEventListener("input",render);
 
-        document.body.classList.toggle(
-            "theater"
-        );
+document.getElementById("fullscreen").onclick=async()=>{
+  try{
+    if(!document.fullscreenElement) await player.requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){console.error(e);}
+};
 
-        const active =
-            document.body.classList.contains(
-                "theater"
-            );
+document.getElementById("theater").onclick=()=>{
+  document.body.classList.toggle("theater");
+};
 
-        theaterBtn.innerHTML =
-            active
-                ? "▣ Exit Theater"
-                : "▣ Theater";
+document.getElementById("openSource").onclick=()=>{
+  if(currentItem) window.open(currentItem.url,"_blank","noopener,noreferrer");
+};
 
-    }
-);
+document.getElementById("next").onclick=()=>{
+  const items=getVisibleItems();
+  if(!items.length)return;
+  const pos=currentItem ? items.indexOf(currentItem) : -1;
+  loadItem(items[(pos+1+items.length)%items.length],0);
+};
 
+document.addEventListener("keydown",e=>{
+  if(document.activeElement===search)return;
+  if(e.key.toLowerCase()==="f"){
+    e.preventDefault();
+    document.getElementById("fullscreen").click();
+  }
+  if(e.key==="ArrowRight"){
+    e.preventDefault();
+    document.getElementById("next").click();
+  }
+});
 
-/* ============================================================
-   NEXT MOVIE
-============================================================ */
-
-nextBtn.addEventListener(
-    "click",
-    () => {
-
-        if (movies.length === 0)
-            return;
-
-        let next =
-            currentMovie + 1;
-
-        if (next >= movies.length)
-            next = 0;
-
-        loadMovie(next);
-
-    }
-);
-
-
-/* ============================================================
-   KEYBOARD SHORTCUTS
-============================================================ */
-
-document.addEventListener(
-    "keydown",
-    (event) => {
-
-        /*
-            Don't trigger shortcuts
-            while typing in search.
-        */
-
-        if (
-            document.activeElement === searchEl
-        ) {
-            return;
-        }
-
-
-        /* F = fullscreen */
-
-        if (
-            event.key.toLowerCase() === "f"
-        ) {
-
-            event.preventDefault();
-
-            toggleFullscreen();
-
-        }
-
-
-        /* Arrow Right = next movie */
-
-        if (
-            event.key === "ArrowRight"
-        ) {
-
-            /*
-                Only if a movie is already selected.
-            */
-
-            if (currentMovie !== -1) {
-
-                event.preventDefault();
-
-                let next =
-                    currentMovie + 1;
-
-                if (
-                    next >= movies.length
-                ) {
-                    next = 0;
-                }
-
-                loadMovie(next);
-
-            }
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   INIT
-============================================================ */
-
-renderMovies();
-
+render();
 </script>
-
 </body>
 </html>
