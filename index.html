@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>My Movies</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #08080c;
+    --surface: #111116;
+    --surface-2: #17171e;
+    --surface-3: #1d1d26;
+    --border: #272732;
+
+    --text: #f2f2f6;
+    --sub: #9999aa;
+    --muted: #5f5f70;
+
+    --accent: #7c5cfc;
+    --accent-hi: #a58cff;
+    --accent-dark: #241b4c;
+
+    --radius: 12px;
+}
+
+html {
+    background: var(--bg);
+}
+
+body {
+    background:
+        radial-gradient(
+            circle at 50% -20%,
+            rgba(124, 92, 252, 0.10),
+            transparent 40%
+        ),
+        var(--bg);
+
+    color: var(--text);
+    min-height: 100vh;
+
+    font-family: "Inter", system-ui, sans-serif;
+
+    overflow-x: hidden;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    height: 68px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 0 24px;
+
+    background: rgba(8, 8, 12, 0.78);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 19px;
+    font-weight: 700;
+
+    letter-spacing: -0.4px;
+
+    white-space: nowrap;
+}
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 9px;
+
+    background: linear-gradient(
+        135deg,
+        var(--accent),
+        #5b3ee5
+    );
+
+    box-shadow:
+        0 5px 20px rgba(124, 92, 252, 0.25);
+}
+
+.logo span {
+    color: var(--accent-hi);
+}
+
+.search-wrap {
+    position: relative;
+
+    flex: 1;
+
+    max-width: 520px;
+}
+
+#search {
+    width: 100%;
+
+    padding: 11px 14px 11px 42px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: rgba(20,20,27,0.9);
+
+    color: var(--text);
+
+    font-size: 14px;
+    font-family: inherit;
+
+    outline: none;
+
+    transition:
+        border-color .2s,
+        box-shadow .2s,
+        background .2s;
+}
+
+#search:focus {
+    border-color: rgba(124,92,252,.7);
+
+    background: var(--surface-2);
+
+    box-shadow:
+        0 0 0 3px rgba(124,92,252,.10);
+}
+
+#search::placeholder {
+    color: var(--muted);
+}
+
+.search-icon {
+    position: absolute;
+
+    left: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: var(--muted);
+
+    font-size: 15px;
+
+    pointer-events: none;
+}
+
+#movieCount {
+    color: var(--muted);
+
+    font-size: 13px;
+
+    white-space: nowrap;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) 340px;
+
+    max-width: 1450px;
+
+    margin: auto;
+
+    gap: 22px;
+
+    padding: 24px;
+}
+
+.left {
+    min-width: 0;
+}
+
+.right {
+    position: sticky;
+
+    top: 92px;
+
+    height: calc(100vh - 116px);
+
+    min-height: 400px;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+/* =========================
+   PLAYER
+========================= */
+
+.player-wrap {
+    position: relative;
+
+    background: #000;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+
+    aspect-ratio: 16 / 9;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.35);
+
+    transition:
+        border-radius .3s,
+        box-shadow .3s;
+}
+
+.player-wrap:hover {
+    border-color: #30303b;
+}
+
+.placeholder {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    color: var(--muted);
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(124,92,252,.08),
+            transparent 45%
+        ),
+        #08080c;
+}
+
+.placeholder-icon {
+    width: 72px;
+    height: 72px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 20px;
+
+    background: rgba(124,92,252,.08);
+
+    font-size: 34px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(124,92,252,.12);
+}
+
+.placeholder-text {
+    font-size: 14px;
+}
+
+/* iframe */
+
+#player-iframe {
+    width: 100%;
+    height: 100%;
+
+    border: 0;
+
+    display: none;
+
+    background: #000;
+}
+
+/* =========================
+   PLAYER ACTIONS
+========================= */
+
+.player-actions {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 10px;
+
+    gap: 10px;
+}
+
+.player-action-group {
+    display: flex;
+
+    gap: 7px;
+}
+
+.action-btn {
+    height: 36px;
+
+    padding: 0 12px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: var(--surface);
+
+    color: var(--sub);
+
+    font-family: inherit;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background .15s,
+        color .15s,
+        border-color .15s,
+        transform .15s;
+}
+
+.action-btn:hover {
+    background: var(--surface-3);
+
+    color: var(--text);
+
+    border-color: #393946;
+
+    transform: translateY(-1px);
+}
+
+.action-btn.primary {
+    background: var(--accent-dark);
+
+    border-color: rgba(124,92,252,.35);
+
+    color: var(--accent-hi);
+}
+
+.action-btn.primary:hover {
+    background: #2c215b;
+}
+
+/* =========================
+   NOW PLAYING
+========================= */
+
+.now-playing {
+    padding: 20px 2px 18px;
+}
+
+.now-label {
+    display: none;
+
+    margin-bottom: 5px;
+
+    color: var(--accent-hi);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+.now-title {
+    font-size: 21px;
+
+    font-weight: 600;
+
+    line-height: 1.35;
+
+    color: var(--text);
+
+    letter-spacing: -0.3px;
+}
+
+/* =========================
+   NOTICE
+========================= */
+
+.notice {
+    display: none;
+
+    margin-bottom: 14px;
+
+    padding: 11px 14px;
+
+    border-radius: 9px;
+
+    background: rgba(124,92,252,.07);
+
+    border: 1px solid rgba(124,92,252,.18);
+
+    color: var(--sub);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+.notice strong {
+    color: var(--accent-hi);
+}
+
+/* =========================
+   LIST
+========================= */
+
+.list-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 4px 9px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+}
+
+.list {
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+
+    background: rgba(17,17,22,.88);
+
+    border: 1px solid var(--border);
+
+    border-radius: 13px;
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.18);
+}
+
+.list::-webkit-scrollbar {
+    width: 7px;
+}
+
+.list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.list::-webkit-scrollbar-thumb {
+    background: #292934;
+
+    border-radius: 10px;
+}
+
+.list::-webkit-scrollbar-thumb:hover {
+    background: #3b3b49;
+}
+
+/* =========================
+   MOVIES
+========================= */
+
+.movie {
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    border-bottom: 1px solid rgba(255,255,255,.045);
+
+    cursor: pointer;
+
+    transition:
+        background .15s,
+        padding-left .15s;
+}
+
+.movie:last-child {
+    border-bottom: 0;
+}
+
+.movie:hover {
+    background: rgba(255,255,255,.035);
+}
+
+.movie.active {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(124,92,252,.17),
+            rgba(124,92,252,.045)
+        );
+
+    padding-left: 17px;
+}
+
+.movie.active::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 7px;
+    bottom: 7px;
+
+    width: 3px;
+
+    border-radius: 0 5px 5px 0;
+
+    background: var(--accent);
+}
+
+.num {
+    min-width: 24px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+
+    text-align: right;
+
+    font-variant-numeric: tabular-nums;
+}
+
+.movie.active .num {
+    color: var(--accent-hi);
+}
+
+.name {
+    flex: 1;
+
+    color: var(--sub);
+
+    font-size: 13px;
+
+    line-height: 1.4;
+}
+
+.movie:hover .name,
+.movie.active .name {
+    color: var(--text);
+}
+
+.play-icon {
+    width: 25px;
+    height: 25px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 7px;
+
+    background: rgba(255,255,255,.04);
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    opacity: 0;
+
+    transform: translateX(4px);
+
+    transition:
+        opacity .15s,
+        transform .15s;
+}
+
+.movie:hover .play-icon,
+.movie.active .play-icon {
+    opacity: 1;
+
+    transform: translateX(0);
+}
+
+.movie.active .play-icon {
+    background: var(--accent);
+
+    color: white;
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty {
+    padding: 45px 20px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+/* =========================
+   THEATER MODE
+========================= */
+
+body.theater main {
+    max-width: 1800px;
+
+    grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+body.theater .player-wrap {
+    border-radius: 10px;
+}
+
+body.theater .right {
+    height: calc(100vh - 116px);
+}
+
+/* =========================
+   FULLSCREEN
+========================= */
+
+.player-wrap:fullscreen {
+    width: 100vw;
+    height: 100vh;
+
+    aspect-ratio: auto;
+
+    border: 0;
+
+    border-radius: 0;
+}
+
+.player-wrap:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+
+    aspect-ratio: auto;
+
+    border: 0;
+
+    border-radius: 0;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    main {
+        grid-template-columns: 1fr;
+
+        padding: 16px;
+    }
+
+    .right {
+        position: static;
+
+        height: 420px;
+    }
+
+    .search-wrap {
+        max-width: none;
+    }
+}
+
+@media (max-width: 600px) {
+
+    header {
+        height: auto;
+
+        flex-wrap: wrap;
+
+        padding: 12px 14px;
+
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 17px;
+    }
+
+    .logo-icon {
+        width: 29px;
+        height: 29px;
+    }
+
+    .search-wrap {
+        order: 3;
+
+        flex-basis: 100%;
+    }
+
+    #movieCount {
+        display: none;
+    }
+
+    main {
+        padding: 10px 10px 30px;
+
+        gap: 16px;
+    }
+
+    .player-wrap {
+        border-radius: 10px;
+    }
+
+    .player-actions {
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        height: 34px;
+
+        padding: 0 10px;
+    }
+
+    .now-title {
+        font-size: 18px;
+    }
+
+    .right {
+        height: 380px;
+    }
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.movie {
+    animation: fadeIn .18s ease both;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        <div class="logo-icon">🎬</div>
+        <div><span>My</span> Movies</div>
+    </div>
+
+    <div class="search-wrap">
+
+        <div class="search-icon">⌕</div>
+
+        <input
+            id="search"
+            type="text"
+            placeholder="Search movies..."
+            autocomplete="off"
+            spellcheck="false"
+        >
+
+    </div>
+
+    <div id="movieCount"></div>
+
+</header>
+
+
+<main>
+
+    <div class="left">
+
+        <!-- PLAYER -->
+
+        <div class="player-wrap" id="playerWrap">
+
+            <div class="placeholder" id="placeholder">
+
+                <div class="placeholder-icon">
+                    🎬
+                </div>
+
+                <div class="placeholder-text">
+                    Select a movie to start watching
+                </div>
+
+            </div>
+
+            <iframe
+                id="player-iframe"
+                allowfullscreen
+                allow="autoplay; encrypted-media"
+            ></iframe>
+
+        </div>
+
+
+        <!-- PLAYER BUTTONS -->
+
+        <div class="player-actions">
+
+            <div class="player-action-group">
+
+                <button
+                    class="action-btn primary"
+                    id="fullscreenBtn"
+                    type="button"
+                >
+                    ⛶ Fullscreen
+                </button>
+
+                <button
+                    class="action-btn"
+                    id="theaterBtn"
+                    type="button"
+                >
+                    ▣ Theater
+                </button>
+
+            </div>
+
+            <div class="player-action-group">
+
+                <button
+                    class="action-btn"
+                    id="nextBtn"
+                    type="button"
+                >
+                    Next →
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- NOTICE -->
+
+        <div class="notice" id="notice">
+
+            <strong>Heads up:</strong>
+            Google may ask you to sign in or show a
+            "can't play" message for some files.
+            Make sure each file in Drive is set to
+            <strong>Anyone with the link → Viewer</strong>.
+
+        </div>
+
+
+        <!-- NOW PLAYING -->
+
+        <div class="now-playing">
+
+            <div
+                class="now-label"
+                id="nowLabel"
+            >
+                Now playing
+            </div>
+
+            <div
+                class="now-title"
+                id="currentTitle"
+            >
+                Select a movie to start watching
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MOVIE LIST -->
+
+    <div class="right">
+
+        <div
+            class="list-header"
+            id="listHeader"
+        >
+            <span>All movies</span>
+        </div>
+
+        <div
+            class="list"
+            id="movieList"
+        ></div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+/* ============================================================
+   MOVIES
+============================================================ */
+
+const movies = [
+
+    {
+        title: "Santa Buddies",
+        url: "https://drive.google.com/file/d/1XF-bj2OAmSe0MqdlwNWontlMDuFWDDmL/view?usp=sharing"
+    },
+
+    {
+        title: "Anaconda",
+        url: "https://drive.google.com/file/d/1e6WxaBMG5Uz-7oR-RNqq3OqDiYhlGr-s/view?usp=sharing"
+    },
+
+    {
+        title: "Adams Family (1991)",
+        url: "https://drive.google.com/file/d/19ZYLs_076nTJtl7bEUtkwpfbwwj-GevJ/view?usp=sharing"
+    },
+
+    {
+        title: "Avengers",
+        url: "https://drive.google.com/file/d/1VazQykKMstXeaPRWUTwxUeWomjJUpRkE/view?usp=sharing"
+    },
+
+    {
+        title: "Avengers Age Of Ultron",
+        url: "https://drive.google.com/file/d/1RX9OwNju-DhN5pwDyDhgM_lL399xZCap/view?usp=sharing"
+    },
+
+    {
+        title: "Avengers Infinity War",
+        url: "https://drive.google.com/file/d/1oKDbw6zCdSRKRbABn6nKf_4LGsA3ftwL/view?usp=sharing"
+    },
+
+    {
+        title: "Avengers End Game",
+        url: "https://drive.google.com/file/d/1ehi9tidOYHb1RMldxtBw6-L3UhyEKVm9/view?usp=drivesdk"
+    },
+
+    {
+        title: "Anastasia",
+        url: "https://drive.google.com/file/d/1Vej6JoLL11vsSsVoUEOCGAoucInV3fhg/view?usp=sharing"
+    },
+
+    {
+        title: "Alvin and the Chipmunks",
+        url: "https://drive.google.com/file/d/1uCRRJZj1GAaweX996uHbF2zxPoessmGW/view?usp=sharing"
+    },
+
+    {
+        title: "AATC Squeakwal",
+        url: "https://drive.google.com/file/d/1em55qHTtdrWD4Dox9CXs9r1042TLu_cu/view?usp=sharing"
+    },
+
+    {
+        title: "AATC Chipwrecked",
+        url: "https://drive.google.com/file/d/1LTKy48IbusfXsl5nSNDTd0M3A8B3aPke/view?usp=sharing"
+    },
+
+    {
+        title: "Ace Ventura: Pet Detective",
+        url: "https://drive.google.com/file/d/1hFcuvFNBe3iQVhP0RKKPOZzPYU9-eFwD/view?usp=drive_link"
+    },
+
+    {
+        title: "Ant Man and the Wasp Quantomania",
+        url: "https://drive.google.com/file/d/1AW3Zm8256tzZ-37lmgYmIGse4knu8IdA/view"
+    },
+
+    {
+        title: "Annie (1999)",
+        url: "https://drive.google.com/file/d/15j2lph1iEm-3mWnKcjaVUxkodInyFLsL/view?usp=sharing"
+    },
+
+    {
+        title: "Annie (2014)",
+        url: "https://drive.google.com/file/d/1GYQqHUdyWMNQJKj4Sa8SGW0ZRX32D5og/view?usp=sharing"
+    },
+
+    {
+        title: "American Psycho",
+        url: "https://drive.google.com/file/d/16e4ru2rSr_UQNsq_DnF9mmMG6UURYO0o/view?usp=sharing"
+    },
+
+    {
+        title: "Avatar 1",
+        url: "https://drive.google.com/file/d/16tKuEYtxi7EeKtX3yZZR-nXgZ_oGTxXS/view?usp=sharing"
+    },
+
+    {
+        title: "Avatar 2 - Way of Water",
+        url: "https://drive.google.com/file/d/1a6y7NvveaJanEBTMvEeS2Ro3v2vII9Gt/view?usp=drive_link"
+    },
+
+    {
+        title: "Avatar 3 - Fire and Ash",
+        url: "https://drive.google.com/file/d/1fHMpBNotGTHeX3eiCeYRdTCbMrbjM0aj/view?usp=sharing"
+    },
+
+    {
+        title: "Avatar the Last Airbender: AANG (2026)",
+        url: "https://drive.google.com/file/d/18F5NmcXagAOc80je8-89w3uZ9Ru7tMnR/view?usp=sharing"
+    },
+
+    {
+        title: "Aladdin 1",
+        url: "https://drive.google.com/file/d/1Haueh9PnM4UeUPwgMlRdYHiLbBJSVe8c/view?usp=drive_link"
+    },
+
+    {
+        title: "Aladdin 2",
+        url: "https://drive.google.com/file/d/1-bPH20w81ek2SVsn1tDo06KOB2Ybzexp/view?usp=drivesdk"
+    },
+
+    {
+        title: "Aladdin 3",
+        url: "https://drive.google.com/file/d/1-aGV6bUS3BCxJ0-aXRt7qjvw4FupWZul/view?usp=sharing"
+    },
+
+    {
+        title: "Aladdin Live Action",
+        url: "https://drive.google.com/file/d/1-ojY6UY42G8krF1ahreGwgmokX3FGwD/view?usp=sharing"
+    },
+
+    {
+        title: "Amistad",
+        url: "https://drive.google.com/file/d/1yLnn08WMfw_Gans9jmOGoDVHwOkf-LFD/view?usp=sharing"
+    },
+
+    {
+        title: "Aquaman 1",
+        url: "https://drive.google.com/file/d/1pXTuacvpgfr2o2Nx8EjuO9rXbFWYpHs5/view?usp=drive_link"
+    },
+
+    {
+        title: "Aquaman 2",
+        url: "https://drive.google.com/file/d/1ckNGSVAYQ46FiawJqLyIfcVUpcSQnUOC/view?usp=drive_link"
+    },
+
+    {
+        title: "About a Boy",
+        url: "https://drive.google.com/file/d/1nkti_wfUlge77R89O2raNMqTG0T26Imx/view?usp=drive_link"
+    },
+
+    {
+        title: "All of Us Strangers",
+        url: "https://drive.google.com/file/d/1RibCsz1oUZp2i2Sb-zqsSwc2Y3-fBFla/view?usp=drive_link"
+    },
+
+    {
+        title: "Armageddon",
+        url: "https://drive.google.com/file/d/13YpBPHID2kOYN_Qe6luBCSb6R8810PWc/view?usp=sharing"
+    },
+
+    {
+        title: "Alice In Wonderland",
+        url: "https://drive.google.com/file/d/1mgeLaeUbClGhPArUBkquX0y2DyGzQrt2/view?usp=sharing"
+    },
+
+    {
+        title: "Alice In Wonderland Live Action",
+        url: "https://drive.google.com/file/d/1-UTHRAC6yodnOZ3Ss_EZ7M7rdnKxlzZ9/view?usp=sharing"
+    },
+
+    {
+        title: "An American Girl: Grace Stirs Up Success",
+        url: "https://drive.google.com/file/d/1-dVkqF-JaW3-cSzqBgtayOpHVUvKFhOv/view?usp=sharing"
+    }
+
+];
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const iframe =
+    document.getElementById("player-iframe");
+
+const placeholder =
+    document.getElementById("placeholder");
+
+const currentTitle =
+    document.getElementById("currentTitle");
+
+const nowLabel =
+    document.getElementById("nowLabel");
+
+const notice =
+    document.getElementById("notice");
+
+const movieList =
+    document.getElementById("movieList");
+
+const searchEl =
+    document.getElementById("search");
+
+const movieCount =
+    document.getElementById("movieCount");
+
+const listHeader =
+    document.getElementById("listHeader");
+
+const playerWrap =
+    document.getElementById("playerWrap");
+
+const fullscreenBtn =
+    document.getElementById("fullscreenBtn");
+
+const theaterBtn =
+    document.getElementById("theaterBtn");
+
+const nextBtn =
+    document.getElementById("nextBtn");
+
+
+let currentMovie = -1;
+
+
+/* ============================================================
+   GOOGLE DRIVE
+============================================================ */
+
+function getDriveId(url) {
+
+    let match =
+        url.match(/\/file\/d\/([^\/\?]+)/);
+
+    if (match)
+        return match[1];
+
+    match =
+        url.match(/[?&]id=([^&]+)/);
+
+    return match
+        ? match[1]
+        : null;
+}
+
+
+function previewUrl(url) {
+
+    const id =
+        getDriveId(url);
+
+    return id
+        ? "https://drive.google.com/file/d/" +
+          id +
+          "/preview"
+        : url;
+}
+
+
+/* ============================================================
+   SECURITY
+============================================================ */
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+
+/* ============================================================
+   LOAD MOVIE
+============================================================ */
+
+function loadMovie(index) {
+
+    if (
+        index < 0 ||
+        index >= movies.length
+    ) {
+        return;
+    }
+
+    currentMovie = index;
+
+    const movie =
+        movies[index];
+
+    currentTitle.textContent =
+        movie.title;
+
+    nowLabel.style.display =
+        "block";
+
+    notice.style.display =
+        "block";
+
+    iframe.style.display =
+        "block";
+
+    placeholder.style.display =
+        "none";
+
+    iframe.src =
+        previewUrl(movie.url);
+
+    renderMovies();
+
+    setTimeout(() => {
+
+        const active =
+            movieList.querySelector(".active");
+
+        if (active) {
+
+            active.scrollIntoView({
+                block: "nearest",
+                behavior: "smooth"
+            });
+
+        }
+
+    }, 50);
+}
+
+
+/* ============================================================
+   RENDER MOVIES
+============================================================ */
+
+function renderMovies() {
+
+    const q =
+        searchEl.value
+            .toLowerCase()
+            .trim();
+
+    movieList.innerHTML = "";
+
+    let found = 0;
+
+    movies.forEach((movie, i) => {
+
+        if (
+            q &&
+            !movie.title
+                .toLowerCase()
+                .includes(q)
+        ) {
+            return;
+        }
+
+        found++;
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "movie" +
+            (
+                i === currentMovie
+                    ? " active"
+                    : ""
+            );
+
+        item.innerHTML =
+
+            '<span class="num">' +
+                String(i + 1).padStart(2, "0") +
+            '</span>' +
+
+            '<span class="name">' +
+                escapeHtml(movie.title) +
+            '</span>' +
+
+            '<span class="play-icon">▶</span>';
+
+        item.onclick =
+            () => loadMovie(i);
+
+        movieList.appendChild(item);
+
+    });
+
+
+    if (found === 0) {
+
+        movieList.innerHTML =
+            '<div class="empty">' +
+            'No movies match "' +
+            escapeHtml(searchEl.value) +
+            '"' +
+            '</div>';
+
+    }
+
+
+    movieCount.textContent =
+        found + " of " + movies.length;
+
+    if (q) {
+
+        listHeader.innerHTML =
+            "<span>Search results</span>";
+
+    } else {
+
+        listHeader.innerHTML =
+            "<span>All movies</span>";
+
+    }
+}
+
+
+/* ============================================================
+   SEARCH
+============================================================ */
+
+searchEl.addEventListener(
+    "input",
+    renderMovies
+);
+
+
+/* ============================================================
+   FULLSCREEN
+============================================================ */
+
+async function toggleFullscreen() {
+
+    try {
+
+        if (!document.fullscreenElement) {
+
+            await playerWrap.requestFullscreen();
+
+        } else {
+
+            await document.exitFullscreen();
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Fullscreen error:",
+            error
+        );
+
+    }
+}
+
+
+fullscreenBtn.addEventListener(
+    "click",
+    toggleFullscreen
+);
+
+
+/* Update button text */
+
+document.addEventListener(
+    "fullscreenchange",
+    () => {
+
+        if (document.fullscreenElement) {
+
+            fullscreenBtn.innerHTML =
+                "⛶ Exit Fullscreen";
+
+        } else {
+
+            fullscreenBtn.innerHTML =
+                "⛶ Fullscreen";
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   THEATER MODE
+============================================================ */
+
+theaterBtn.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle(
+            "theater"
+        );
+
+        const active =
+            document.body.classList.contains(
+                "theater"
+            );
+
+        theaterBtn.innerHTML =
+            active
+                ? "▣ Exit Theater"
+                : "▣ Theater";
+
+    }
+);
+
+
+/* ============================================================
+   NEXT MOVIE
+============================================================ */
+
+nextBtn.addEventListener(
+    "click",
+    () => {
+
+        if (movies.length === 0)
+            return;
+
+        let next =
+            currentMovie + 1;
+
+        if (next >= movies.length)
+            next = 0;
+
+        loadMovie(next);
+
+    }
+);
+
+
+/* ============================================================
+   KEYBOARD SHORTCUTS
+============================================================ */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        /*
+            Don't trigger shortcuts
+            while typing in search.
+        */
+
+        if (
+            document.activeElement === searchEl
+        ) {
+            return;
+        }
+
+
+        /* F = fullscreen */
+
+        if (
+            event.key.toLowerCase() === "f"
+        ) {
+
+            event.preventDefault();
+
+            toggleFullscreen();
+
+        }
+
+
+        /* Arrow Right = next movie */
+
+        if (
+            event.key === "ArrowRight"
+        ) {
+
+            /*
+                Only if a movie is already selected.
+            */
+
+            if (currentMovie !== -1) {
+
+                event.preventDefault();
+
+                let next =
+                    currentMovie + 1;
+
+                if (
+                    next >= movies.length
+                ) {
+                    next = 0;
+                }
+
+                loadMovie(next);
+
+            }
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   INIT
+============================================================ */
+
+renderMovies();
+
+</script>
+
+</body>
+</html>
