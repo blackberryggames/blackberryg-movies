@@ -18,7 +18,7 @@ header{position:sticky;top:0;z-index:50;height:68px;display:flex;align-items:cen
 #count{font-size:12px;color:var(--muted);white-space:nowrap}
 main{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:22px;max-width:1500px;margin:auto;padding:24px}
 .player{position:relative;background:#000;border:1px solid var(--border);border-radius:14px;overflow:hidden;aspect-ratio:16/9;box-shadow:0 20px 60px rgba(0,0,0,.35)}
-.player iframe,.player video{width:100%;height:100%;border:0;display:none;background:#000}
+.player iframe,.player video{width:100%;height:100%;border:0;display:none;background:#000}.driveFallback{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;text-align:center;padding:30px;background:radial-gradient(circle at center,rgba(124,92,252,.1),transparent 50%),#08080c}.driveFallback .big{font-size:42px}.driveFallback p{max-width:520px;color:var(--sub);font-size:13px;line-height:1.5}.driveFallback a{display:inline-flex;align-items:center;gap:7px;text-decoration:none}.player.loading:after{content:"";position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px;border:3px solid rgba(255,255,255,.12);border-top-color:var(--accentHi);border-radius:50%;animation:spin .8s linear infinite;pointer-events:none}.player.loaded:after{display:none}@keyframes spin{to{transform:rotate(360deg)}}
 .placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);background:radial-gradient(circle at center,rgba(124,92,252,.08),transparent 45%),#08080c}.placeholderIcon{width:72px;height:72px;display:grid;place-items:center;border-radius:20px;background:rgba(124,92,252,.08);font-size:34px}
 .actions{display:flex;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}.group{display:flex;gap:7px}.btn{height:36px;padding:0 12px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--sub);font:600 12px Inter;cursor:pointer}.btn:hover{background:var(--surface3);color:var(--text)}.btn.primary{background:var(--accentDark);border-color:rgba(124,92,252,.35);color:var(--accentHi)}
 .now{padding:20px 2px}.label{display:none;color:var(--accentHi);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}.title{font-size:21px;font-weight:600}
@@ -52,6 +52,7 @@ body.theater main{max-width:1800px;grid-template-columns:minmax(0,1fr) 300px}
       </div>
       <iframe id="iframe" allowfullscreen allow="autoplay; encrypted-media"></iframe>
       <video id="video" controls playsinline></video>
+      <div class="driveFallback" id="driveFallback"><div class="big">☁️</div><strong id="fallbackTitle">This file could not be previewed here</strong><p id="fallbackText">Google Drive can sometimes reject embedded playback for large files, unsupported formats, or files with a playback/download restriction. Opening the original Drive page is the reliable fallback.</p><a class="btn primary" id="fallbackOpen" target="_blank" rel="noopener">↗ Open in Google Drive</a></div>
     </div>
 
     <div class="actions">
@@ -66,8 +67,8 @@ body.theater main{max-width:1800px;grid-template-columns:minmax(0,1fr) 300px}
     </div>
 
     <div class="notice" id="notice">
-      <strong>Tip:</strong> Google Drive files need to be shared as <strong>Anyone with the link → Viewer</strong>.
-      Some third-party pages do not allow iframe embedding; use <strong>Open source</strong> for those.
+      <strong>Tip:</strong> Google Drive files should be shared as <strong>Anyone with the link → Viewer</strong>.
+      For Drive files, this player uses Google’s preview instead of trying to stream the raw file. MKV files may still require opening the file in Drive because browsers do not natively decode MKV.
     </div>
 
     <div class="now">
@@ -666,15 +667,25 @@ function isDirectMedia(url){
 
 function sourceUrl(item){
   const fileId=driveFileId(item.url);
-  if(fileId) return "https://drive.google.com/file/d/"+fileId+"/preview";
+  if(fileId) return "https://drive.google.com/file/d/"+fileId+"/preview?rm=minimal";
   const yt=youtubeEmbed(item.url);
   if(yt) return yt;
   return item.url;
 }
 
+function showDriveFallback(item, reason){
+  driveFallback.style.display="flex";
+  fallbackTitle.textContent=item.title;
+  fallbackText.textContent=reason || "Google Drive did not allow this file to play inside the embedded viewer. The file may still work normally when opened in Drive.";
+  fallbackOpen.href=item.url;
+}
+
 function resetPlayer(){
+  player.classList.remove("loaded");
+  player.classList.add("loading");
   iframe.style.display="none";
   video.style.display="none";
+  driveFallback.style.display="none";
   iframe.src="about:blank";
   video.pause();
   video.removeAttribute("src");
@@ -693,25 +704,45 @@ function loadItem(item,index){
   resetPlayer();
 
   const folderId=driveFolderId(item.url);
+  const fileId=driveFileId(item.url);
   const yt=youtubeEmbed(item.url);
 
-  if(isDirectMedia(item.url)){
-    video.src=item.url;
-    video.style.display="block";
-    video.play().catch(()=>{});
-  }else if(driveFileId(item.url)){
+  if(fileId){
+    // Always use Drive's own preview for Drive files. Never treat MKV/MP4/etc.
+    // as a direct browser video URL; that is a common cause of Drive 403s.
     iframe.src=sourceUrl(item);
     iframe.style.display="block";
+    fallbackOpen.href=item.url;
+
+    // Cross-origin iframe errors cannot be read by JavaScript, so keep a manual
+    // fallback available instead of trying to bypass Google's permissions.
+    iframe.onload=()=>{
+      player.classList.remove("loading");
+      player.classList.add("loaded");
+    };
   }else if(folderId){
-    // Drive folders are best opened directly; embedding a folder is inconsistent across browsers.
-    iframe.src="https://drive.google.com/drive/folders/"+folderId;
-    iframe.style.display="block";
+    // Do not embed Drive folders. Folder embedding is inconsistent and can show 403.
+    player.classList.remove("loading");
+    player.classList.add("loaded");
+    showDriveFallback(item,"This is a Google Drive folder. Open it in Drive to choose an episode or file.");
+  }else if(isDirectMedia(item.url)){
+    video.src=item.url;
+    video.style.display="block";
+    video.onloadeddata=()=>{player.classList.remove("loading");player.classList.add("loaded")};
+    video.onerror=()=>{
+      player.classList.remove("loading");
+      player.classList.add("loaded");
+      showDriveFallback(item,"This direct video URL could not be played by your browser. Try opening the original source instead.");
+    };
+    video.play().catch(()=>{});
   }else if(yt){
     iframe.src=yt;
     iframe.style.display="block";
+    iframe.onload=()=>{player.classList.remove("loading");player.classList.add("loaded")};
   }else{
     iframe.src=item.url;
     iframe.style.display="block";
+    iframe.onload=()=>{player.classList.remove("loading");player.classList.add("loaded")};
   }
 
   render();
